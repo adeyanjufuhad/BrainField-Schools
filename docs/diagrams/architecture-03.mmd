@@ -1,0 +1,15 @@
+flowchart TB
+    DRAFT[Subject sheet: draft] -->|Teacher submits validated sheet| SUB[Subject sheet: submitted]
+    SUB --> REVIEW[Class teacher checks completeness and totals]
+    REVIEW -->|Return specific sheet with reason| CORR[Teacher correction required]
+    CORR -->|Resubmit new revision| SUB
+    REVIEW -->|All required sheets accepted| CLASS[Class batch: class approved]
+    CLASS --> VP[VP Administration review]
+    VP -->|Return with reason| RETURN[Batch returned to class teacher]
+    RETURN --> REVIEW
+    VP -->|Final approval| APPROVED[Class batch: VP approved]
+    APPROVED -->|Publisher releases approved revision| PUBLISHED[Published immutable result revision]
+    PUBLISHED --> STUDENT[Student can view own report]
+    PUBLISHED --> DIRECTOR[Director sees published statistics]
+    PUBLISHED -->|Correction requested| CHANGE[New amendment revision]
+    CHANGE --> DRAFT

@@ -1,0 +1,22 @@
+sequenceDiagram
+    actor Student
+    participant UI as Exam interface
+    participant API as Assessment service
+    participant DB as PostgreSQL
+    participant Job as Finalisation worker
+    Student->>UI: Start assigned exam
+    UI->>API: Request attempt
+    API->>DB: Check roster, window, accommodations, uniqueness
+    DB-->>API: Persist question order and server deadline
+    API-->>UI: Questions without answer keys, attempt ID and deadline
+    loop Each answer change
+        UI->>API: Answer with request ID and expected version
+        API->>DB: Validate attempt, deadline and answer version
+        DB-->>API: Persist answer and audit metadata
+        API-->>UI: Saved acknowledgement and new version
+    end
+    Student->>UI: Submit
+    UI->>API: Finalise attempt idempotently
+    API->>DB: Lock attempt, freeze accepted answers, enqueue grading
+    Job->>DB: Finalise expired attempts and grade frozen answers
+    DB-->>UI: Score available only under release policy

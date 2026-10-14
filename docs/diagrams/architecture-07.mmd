@@ -1,0 +1,12 @@
+flowchart LR
+    DEV[Developer branch] --> PR[GitHub pull request]
+    PR --> CI[Lint, types, tests, migration and RLS checks]
+    CI --> PREVIEW[Preview with synthetic data]
+    PREVIEW --> STAGE[Staging and school acceptance]
+    STAGE --> RELEASE[Approved release]
+    RELEASE --> WEB[Vercel Next.js production]
+    RELEASE --> MIG[Reviewed additive migrations]
+    MIG --> DB[(Production Supabase)]
+    WEB --> DB
+    WORKER[Authenticated scheduled worker] --> DB
+    DB --> BACKUP[Database and separate storage backups]

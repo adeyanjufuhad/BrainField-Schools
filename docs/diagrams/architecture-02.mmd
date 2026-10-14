@@ -1,0 +1,30 @@
+flowchart TB
+    subgraph CLIENT[Untrusted browser]
+        UI[Next.js public and portal interface]
+    end
+    subgraph SERVER[Trusted application boundary]
+        HANDLERS[Server actions and route handlers]
+        GUARDS[Session verification, input validation, permission checks]
+        MODULES[Domain modules]
+        WORKER[Scheduled job worker]
+    end
+    subgraph MANAGED[Managed private data services]
+        AUTH[Supabase Auth]
+        DB[(PostgreSQL: RLS, functions, constraints)]
+        STORE[Storage: private and public buckets]
+    end
+    subgraph EXTERNAL[External boundaries]
+        PAY[Paystack]
+        RUN[Runner on separate origin]
+    end
+    UI --> AUTH
+    UI --> HANDLERS
+    HANDLERS --> GUARDS
+    GUARDS --> MODULES
+    MODULES --> DB
+    MODULES --> STORE
+    WORKER --> DB
+    WORKER --> STORE
+    MODULES -->|Initialise and verify| PAY
+    PAY -->|Signed webhook| HANDLERS
+    UI -->|Validated postMessage| RUN

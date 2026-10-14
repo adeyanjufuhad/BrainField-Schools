@@ -1,0 +1,14 @@
+flowchart TB
+    VIS[Public visitor] --> SITE[Public school website]
+    STU[Student] --> PORTAL[Authenticated school portals]
+    STAFF[Subject and class teachers] --> PORTAL
+    LEAD[VP Admin, principal, proprietor] --> PORTAL
+    DIRECTOR[Director] --> DASH[Separate director dashboard]
+    PARENT[Guardian - optional phase] -.-> PORTAL
+    SITE --> APP[BrainField Schools application]
+    PORTAL --> APP
+    DASH --> APP
+    APP --> DATA[(Private academic and billing records)]
+    APP --> PAY[Paystack hosted checkout]
+    APP --> MSG[Notification provider - optional]
+    APP --> RUN[Isolated programming runner]

@@ -1,0 +1,13 @@
+{
+  "name": "brainfield-schools-docs",
+  "private": true,
+  "description": "Mermaid rendering tools for BrainField Schools planning documents",
+  "scripts": {
+    "docs:render": "python scripts/render_diagrams.py",
+    "docs:build": "python scripts/build_documents.py",
+    "docs:check": "python scripts/check_documents.py"
+  },
+  "devDependencies": {
+    "@mermaid-js/mermaid-cli": "12.0.0"
+  }
+}

@@ -1,0 +1,18 @@
+sequenceDiagram
+    actor Payer
+    participant App as Billing service
+    participant DB as PostgreSQL
+    participant Pay as Paystack
+    Payer->>App: Pay permitted invoice
+    App->>DB: Read authoritative balance and create payment attempt
+    App->>Pay: Initialise server-calculated amount and reference
+    Pay-->>Payer: Hosted checkout
+    Pay->>App: Signed webhook
+    App->>App: Validate HMAC SHA512 over raw body
+    App->>DB: Durably record event with deduplication key
+    App-->>Pay: Acknowledge accepted event
+    App->>Pay: Verify transaction from trusted server or worker
+    Pay-->>App: Status, reference, amount, currency and account metadata
+    App->>DB: Transaction: confirm payment, allocate once, issue receipt
+    Payer->>App: Read verified payment status
+    App-->>Payer: Receipt or pending state
