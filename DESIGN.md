@@ -1,12 +1,12 @@
 # BrainField Schools design guidance
 
-Status: proposed design system; confirm school logo and brand assets during discovery.
+Status: landing-page design implemented; founder-supplied school logo is in use. School photographs remain pending.
 
 ## Visual direction
 
-Use a trustworthy, calm school website and task-focused portals. The public site should lead with the actual school identity and approved photographs; portal pages should make daily actions easy to find. Use Geist Sans for interface text and Geist Mono sparingly for technical output. Use the same visual language across role-specific navigation.
+Use a trustworthy, calm school website and task-focused portals. The public site should lead with the actual school identity and approved photographs; portal pages should make daily actions easy to find. Use locally hosted Outfit for interface text and Newsreader for public-site editorial headings. Use sans-serif typography in future academic dashboards. Use the same visual language across role-specific navigation.
 
-The user's blue palette takes precedence over reference brands and generic skill colour restrictions: `#03045e`, `#023e8a`, `#0077b6`, `#0096c7`, `#00b4d8`, `#48cae4`, `#90e0ef`, `#ade8f4`, `#caf0f8`. Use deep navy for readable text and primary actions, near-white surfaces, and pale blues for selected states. Check actual foreground/background contrast; avoid small white text on cyan. Status labels must include text or icons, not colour alone.
+The founder's confirmed palette is `#386641` (forest green), `#6a994e` (leaf green), `#a7c957` (lime), `#d00000` (red), and `#ffffff` (white). This supersedes the earlier blue palette. Use forest green for readable text and navigation, lime/light green for decorative surfaces, red for key actions, and white for breathing room. Derived pale green surfaces are allowed. Preserve the supplied logo artwork without recolouring it. Avoid small white text on leaf/lime green; check actual contrast. Status labels require text/icons in addition to colour.
 
 ## Layout and interaction
 
@@ -27,4 +27,9 @@ Target WCAG 2.2 AA as an implementation goal, verified through review rather tha
 
 ## References and precedence
 
-Follow [Vercel Web Interface Guidelines](https://vercel.com/design/guidelines) and the installed Taste Skill's relevant typography, component-state, responsive-layout, and restraint guidance. School task clarity, accessibility, accurate data, and the blue palette override decorative suggestions. The existing RepoSpec product's layouts and branding are not school content.
+Follow [Vercel Web Interface Guidelines](https://vercel.com/design/guidelines) and the installed Taste Skill's relevant typography, component-state, responsive-layout, and restraint guidance. School task clarity, accessibility, accurate data, and the founder-selected green/red/white palette override decorative suggestions. The existing RepoSpec product's layouts and branding are not school content.
+
+
+## Landing-page content
+
+Give Salolo and Abule Egba equal-size campus cards; label Salolo as main campus. Use the supplied logo unchanged. Contact links use the three founder-provided numbers. Historical achievements require nearby source links and dates/editions; individual UTME scores must not appear as school averages. Original campus artwork is explicitly illustrative. Keep draft academic/facility copy non-specific until approved. See docs/CONTENT-SOURCES.md.

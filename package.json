@@ -1,8 +1,14 @@
 {
-  "name": "brainfield-schools-docs",
+  "name": "brainfield-schools",
   "private": true,
-  "description": "Mermaid rendering tools for BrainField Schools planning documents",
+  "description": "Brainfield Schools Lagos website and school platform",
   "scripts": {
+    "dev": "npm --prefix apps/web run dev",
+    "build": "npm --prefix apps/web run build",
+    "start": "npm --prefix apps/web run start",
+    "lint": "npm --prefix apps/web run lint",
+    "typecheck": "npm --prefix apps/web run typecheck",
+    "test:e2e": "npm --prefix apps/web run test:e2e",
     "docs:render": "python scripts/render_diagrams.py",
     "docs:build": "python scripts/build_documents.py",
     "docs:check": "python scripts/check_documents.py"
