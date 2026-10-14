@@ -1,12 +1,12 @@
 # BrainField Schools — System Architecture
 
-Version 1.0 | 14 October 2026 | Proposed design for school review
+Version 1.1 | 14 October 2026 | Proposed design for school review
 
-This document describes the intended system, not an implemented service. Confirmed requirements come from the founders' discussion. Technology choices and operational policies are proposals until agreed. Learning progress reports are excluded. The director has a separate dashboard. Result approval follows subject teacher, class teacher, then Vice Principal (Administration).
+This document describes the target platform. Its public Next.js landing page is implemented; school portals, real-data operations, and live payments are not. Neon PostgreSQL and Neon Auth are the founder-selected providers; their connection code is prepared but no Neon project is connected. Other technology choices and operational policies remain proposals until agreed. Learning progress reports are excluded. The director has a separate dashboard. Result approval follows subject teacher, class teacher, then Vice Principal (Administration).
 
 ## 1. Architectural approach
 
-Build a modular monolith: one Next.js application with clearly separated domain modules, one PostgreSQL database, managed identity/storage, and a small background worker. This keeps deployment and debugging practical for two developers while preserving boundaries that can be separated later.
+Build a modular monolith: one Next.js application with clearly separated domain modules, one Neon PostgreSQL database, Neon Auth, separately configured private object storage, and a small background worker. This keeps deployment and debugging practical for two developers while preserving boundaries that can be separated later.
 
 The public website and authenticated portals share design components, not unrestricted data access. Business rules live in server-side domain services and constrained database functions. The browser is never trusted to determine roles, marks, invoice balances, exam deadlines, or payment success.
 
@@ -47,7 +47,7 @@ flowchart TB
         WORKER[Scheduled job worker]
     end
     subgraph MANAGED[Managed private data services]
-        AUTH[Supabase Auth]
+        AUTH[Neon Auth]
         DB[(PostgreSQL: RLS, functions, constraints)]
         STORE[Storage: private and public buckets]
     end
@@ -55,7 +55,7 @@ flowchart TB
         PAY[Paystack]
         RUN[Runner on separate origin]
     end
-    UI --> AUTH
+    HANDLERS --> AUTH
     UI --> HANDLERS
     HANDLERS --> GUARDS
     GUARDS --> MODULES
@@ -68,7 +68,7 @@ flowchart TB
     UI -->|Validated postMessage| RUN
 ```
 
-Use the signed-in user's database context for ordinary application reads. Supabase privileged secret/service-role credentials bypass RLS and must never be exposed to clients or used as the default for routine portal operations. Limit privileged access to controlled account provisioning and trusted jobs, with explicit school/actor checks and audit entries. In SQL functions, derive the actor from authenticated context rather than a browser-supplied user ID. Lock down grants, function execution, and search paths.
+All school database operations go through the trusted Next.js server using a restricted, non-owner PostgreSQL role without BYPASSRLS. Validate the Neon Auth session server-side and look up school membership, role, and active assignment before accessing records. Map the Auth user ID to an application-owned profile; Auth IDs must not be assumed to be UUIDs. Neon Auth does not automatically populate a SQL identity helper. When using identity-based RLS, set verified identity transaction-locally in the same transaction as the query; never use browser-supplied IDs or connection-global identity on pooled sessions. Keep owner/migration credentials separate, restrict function grants/search paths, and log privileged operations. See NEON-SETUP.md for the connection boundary.
 
 Private document downloads require authorisation and short-lived signed links. Public buckets contain only intentionally published media. Upload policies restrict path, size, MIME type, and ownership; validate content server-side, reject executable files, and scan uploads before broader access where appropriate.
 
@@ -235,10 +235,12 @@ sequenceDiagram
     UI->>API: Finalise attempt idempotently
     API->>DB: Lock attempt, freeze accepted answers, enqueue grading
     Job->>DB: Finalise expired attempts and grade frozen answers
-    DB-->>UI: Score available only under release policy
+    UI->>API: Read score when released
+    API->>DB: Check release policy and ownership
+    API-->>UI: Authorised score or pending state
 ```
 
-The sequence's final availability is delivered through an authorised application read, not direct database push. A server-generated attempt deadline is authoritative; browser clock changes cannot extend it. Persist random question/option order once per attempt, and version exam content before release. Essays require authorised manual grading.
+Score availability is delivered through an authorised application read. A server-generated attempt deadline is authoritative; browser clock changes cannot extend it. Persist random question/option order once per attempt, and version exam content before release. Essays require authorised manual grading.
 
 Use retryable, idempotent saves with answer version checks so delayed requests cannot overwrite newer answers. Show saved/unsaved indicators. Resuming an attempt reloads accepted answers and the original deadline. A scheduled job finalises expired attempts even if the student closes the browser. No answer key or immediate solution explanation is sent before the configured release point.
 
@@ -325,7 +327,7 @@ flowchart LR
     STAGE --> RELEASE[Approved release]
     RELEASE --> WEB[Vercel Next.js production]
     RELEASE --> MIG[Reviewed additive migrations]
-    MIG --> DB[(Production Supabase)]
+    MIG --> DB[(Production Neon PostgreSQL)]
     WEB --> DB
     WORKER[Authenticated scheduled worker] --> DB
     DB --> BACKUP[Database and separate storage backups]
@@ -351,7 +353,7 @@ Retention must reflect school policy and applicable obligations. Do not erase fi
 
 Proposed targets for school agreement: daily recovery points for ordinary academic work, recovery within one school day for a serious outage, and a stricter exam/finance recovery requirement if formal CBT and payments become operational. These are desired targets, not service guarantees. Confirm that the chosen backup plan and processes can meet the agreed values.
 
-Supabase database backups do not include Storage object contents. Back up the database and private file objects separately, protect access/encryption, and test restoration in an isolated environment before launch and regularly thereafter. Keep a manifest linking file backups to database snapshots. Never store backups in this repository.
+Neon database recovery and separate object-storage backups cover different data; neither should be assumed to include the other. Back up the database and private file objects separately, protect access/encryption, and test restoration in an isolated environment before launch and regularly thereafter. Keep a manifest linking file backups to database snapshots. Never store backups in this repository.
 
 Monitor failed login spikes, result transition failures, answer-save errors, webhook signature failures, pending payments, overdue jobs, backup freshness, and server errors. Give the school a support contact, escalation path, outage communications procedure, and named account owners. Record incident actions and review them after recovery.
 
@@ -380,10 +382,10 @@ These support implementation details rather than endorsing the proposal:
 - Next.js: https://nextjs.org/docs/app/getting-started/installation
 - Deployment: https://nextjs.org/docs/app/getting-started/deploying
 - Node.js lifecycle: https://nodejs.org/en/about/previous-releases
-- Supabase SSR: https://supabase.com/docs/guides/auth/server-side/nextjs
-- RLS: https://supabase.com/docs/guides/database/postgres/row-level-security
-- Storage access: https://supabase.com/docs/guides/storage/security/access-control
-- Backup scope: https://supabase.com/docs/guides/platform/backups
+- Neon Auth: https://neon.com/docs/auth/quick-start/nextjs
+- PostgreSQL RLS: https://www.postgresql.org/docs/current/ddl-rowsecurity.html
+- Neon driver: https://neon.com/docs/serverless/serverless-driver
+- Neon connection guide: https://neon.com/docs/connect/connect-from-any-app
 - Paystack verification: https://paystack.com/docs/payments/verify-payments/
 - Paystack webhooks: https://paystack.com/docs/payments/webhooks/
 - Pyodide workers: https://pyodide.org/en/stable/usage/webworker.html

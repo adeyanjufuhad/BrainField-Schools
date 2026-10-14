@@ -19,4 +19,6 @@ sequenceDiagram
     UI->>API: Finalise attempt idempotently
     API->>DB: Lock attempt, freeze accepted answers, enqueue grading
     Job->>DB: Finalise expired attempts and grade frozen answers
-    DB-->>UI: Score available only under release policy
+    UI->>API: Read score when released
+    API->>DB: Check release policy and ownership
+    API-->>UI: Authorised score or pending state

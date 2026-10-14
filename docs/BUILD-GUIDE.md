@@ -1,6 +1,6 @@
 # BrainField Schools — Practical Build Guide
 
-Version 1.0 | 14 October 2026 | A proposed plan for two collaborators
+Version 1.1 | 14 October 2026 | A proposed plan for two collaborators
 
 ## 1. What to build first
 
@@ -31,15 +31,15 @@ Produce a signed-off scope, role matrix, paper prototype, anonymised calculation
 
 ## 3. Stack and version policy
 
-Use TypeScript, Node.js 24 LTS, Next.js App Router, React, Tailwind, Supabase PostgreSQL/Auth/Storage, Zod, React Hook Form, Paystack, CodeMirror, Vitest, and Playwright. Use Radix primitives and custom blue styling for accessible components. Use Recharts only when director charts are added.
+Use TypeScript, Node.js 24 LTS, Next.js App Router, React, Tailwind, Neon PostgreSQL and Neon Auth; separate private object storage, Zod, React Hook Form, Paystack, CodeMirror, Vitest, and Playwright. Use Radix primitives and the approved green, red, and white styling for accessible components. Use Recharts only when director charts are added.
 
 At scaffolding, choose currently supported compatible releases, record exact resolved versions in the lockfile, and run security/compatibility checks. Avoid pinning an unverified future framework patch in this planning document. Node.js 24 is the proposed runtime line; verify current support before deployment. Use one package manager, npm, initially.
 
-No Prisma is needed initially: use Supabase's generated database types, SQL migrations, and constrained PostgreSQL functions. Introduce another data layer only for a specific demonstrated problem.
+Start with the Neon serverless SQL driver and reviewed SQL migrations/functions. Drizzle may be added when implementing the relational schema if its typed migrations improve the workflow. Neon Auth provides identity; school memberships and permissions remain application-owned. RLS requires explicit verified transaction-local identity, not a provider-specific auth.uid() assumption.
 
 ## 4. Repository structure
 
-The current repository contains documentation only. The following is the target structure after application scaffolding:
+The repository now contains a public Next.js landing page in apps/web plus documentation. The following includes target directories for later modules:
 
 ```text
 BrainField-Schools/
@@ -77,10 +77,10 @@ BrainField-Schools/
         programming/
       src/lib/
         auth/
-        supabase/
+        db/
         validation/
       tests/
-  supabase/
+  database/
     migrations/
     tests/
     seed.sql
@@ -90,48 +90,33 @@ BrainField-Schools/
 
 Route groups organise layouts; they do not provide security. Check authorisation inside server operations and database policies.
 
-## 5. Local setup when implementation starts
+## 5. Local setup
 
-Install Git, Node.js 24 LTS, an editor, and Docker if running the local Supabase stack. Create organisation-owned service accounts or clearly documented school-owned production accounts; developers use individual logins with delegated permissions.
-
-From the repository root, run:
+The website is already scaffolded. Install Node.js (the project has been verified on Node.js 22.14; Node.js 24 LTS is recommended for deployment), Git, and an editor. From this repository root:
 
 ```sh
-mkdir apps
-npx create-next-app@latest apps/web --ts --tailwind --eslint --app --src-dir --use-npm --import-alias "@/*"
+npm ci --prefix apps/web
+npm run dev
+```
+
+Open http://127.0.0.1:3001. The public landing page has no database dependency and works before Neon is connected. The code is in apps/web/src; school facts, contacts, campuses, and sourced achievements are in src/content/school.ts. The supplied logo is in public/brand. Campus artwork is conceptual, not school photography.
+
+Run lint, type checking, build, and browser verification:
+
+```sh
+npm run lint
+npm run typecheck
+npm run build
 cd apps/web
-npm install @supabase/supabase-js @supabase/ssr zod react-hook-form @hookform/resolvers @radix-ui/react-dialog @radix-ui/react-dropdown-menu
-npm install --save-dev vitest @testing-library/react @testing-library/jest-dom jsdom
-npm init playwright@latest
+npx playwright install chromium
+npm run test:e2e
 ```
 
-Install Recharts, CodeMirror, or language runtimes only in their relevant milestone. Inspect generated configuration rather than copying outdated Tailwind or Next.js conventions. Check dependencies before importing them. Commit the application lockfile.
+Playwright can also use an existing Chrome installation. The test configuration chooses a local Chrome on Windows when available. The browser suite checks both campus details, telephone links, achievement sources, tabs, mobile navigation, FAQs, overflow, accessibility, and the unconfigured Auth response.
 
-In the repository root, set up local data tooling:
+Use the Neon plugin or an authorised Neon Console to provision a development branch and enable Neon Auth. See NEON-SETUP.md before setting server-only DATABASE_URL, NEON_AUTH_BASE_URL, and NEON_AUTH_COOKIE_SECRET in apps/web/.env.local. Never put secrets in NEXT_PUBLIC variables or share them in chat. No Neon project has been provisioned by this landing-page implementation.
 
-```sh
-npm install --save-dev supabase
-npx supabase init
-npx supabase start
-```
-
-Docker must be running for the local stack. If Docker is unavailable, use a dedicated development Supabase project with synthetic data. Keep staging and production separate. Never use production student records for development.
-
-Create `apps/web/.env.local` locally, not in Git. Add a sanitised `.env.example` when the code actually needs these settings:
-
-```text
-NEXT_PUBLIC_SUPABASE_URL=development-project-url
-NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=development-publishable-key
-SUPABASE_SECRET_KEY=server-only-secret-for-controlled-admin-jobs
-PAYSTACK_SECRET_KEY=server-only-test-key
-APP_ORIGIN=http://localhost:3000
-RUNNER_ORIGIN=separate-programming-runner-origin
-CRON_SECRET=server-only-random-worker-secret
-```
-
-Use the key names required by the chosen current Supabase SDK/project configuration. The publishable key identifies the project; RLS and grants protect exposed records. Secret/service-role keys bypass RLS and must remain server-only. `PAYSTACK_SECRET_KEY` starts in test mode. A `NEXT_PUBLIC_` variable is visible in browser bundles; never apply that prefix to secrets.
-
-Run the generated app from `apps/web` with `npm run dev`. Before shared work begins, add scripts for linting, `tsc --noEmit`, unit/integration tests, and browser tests. These application scripts do not exist in the planning repository yet.
+Use school-controlled production accounts and delegated developer access. Local/staging environments use synthetic data. Select private object storage separately when private documents are introduced. Keep owner/migration credentials separate from the restricted application database role. Portal sign-in and invitation flows are later milestones; the current portal page states its availability honestly.
 
 ## 6. Database implementation order
 
@@ -244,7 +229,7 @@ For application pull requests, run dependency installation from the lockfile, li
 
 For documentation changes, validate Mermaid rendering, internal links, PDF text/pages, and consistency between Markdown/source diagrams. The initial repository includes a documentation check workflow; application checks are added when the application exists.
 
-Provision separate Vercel/Supabase environments. Configure DNS, TLS, allowed auth redirect URLs, session/cookie settings, webhook URLs, cron authentication, and rate limits. Restrict preview indexing and access when appropriate. Do not place real student data in preview deployments.
+Provision separate Vercel/Neon environments. Configure DNS, TLS, allowed auth redirect URLs, session/cookie settings, webhook URLs, cron authentication, and rate limits. Restrict preview indexing and access when appropriate. Do not place real student data in preview deployments.
 
 Use reviewed additive migrations and compatible releases. Document rollback steps. If a database change is irreversible, explain the recovery approach before release. School staff should approve the pilot before production account invitations or real payments.
 
@@ -264,7 +249,7 @@ Estimate each milestone as person-days multiplied by an agreed internal day rate
 
 Shared software prices provide affordability context, not direct custom-project valuation. As checked on 14 October 2026, SmartEdu advertises a Pro rate of ₦600 per active student per term, and LumiSaS lists plans from ₦500 to ₦2,000 per active student per term. Compare included modules, support, and service limits before drawing conclusions.
 
-Use milestone payments tied to accepted deliverables; for example, discovery/start, academic pilot, and accepted handover. Define a bounded defect warranty and a separate maintenance agreement. Clarify whether infrastructure is billed directly to the school or included with stated limits. Decide software reuse/licensing before publishing implementation: this public planning repository currently grants no open-source licence.
+Use milestone payments tied to accepted deliverables; for example, discovery/start, academic pilot, and accepted handover. Define a bounded defect warranty and a separate maintenance agreement. Clarify whether infrastructure is billed directly to the school or included with stated limits. Decide software reuse/licensing before publishing implementation: this public project repository currently grants no open-source licence.
 
 ## 18. Regenerating Mermaid diagrams and PDFs
 
@@ -295,10 +280,10 @@ The product is ready for a controlled launch when the school has accepted the re
 
 - Framework setup: https://nextjs.org/docs/app/getting-started/installation
 - Node.js lifecycle: https://nodejs.org/en/about/previous-releases
-- Supabase server-side auth: https://supabase.com/docs/guides/auth/server-side/nextjs
-- Database security: https://supabase.com/docs/guides/database/postgres/row-level-security
-- Storage: https://supabase.com/docs/guides/storage/security/access-control
-- Backup limitations: https://supabase.com/docs/guides/platform/backups
+- Neon Auth: https://neon.com/docs/auth/quick-start/nextjs
+- Database security: https://www.postgresql.org/docs/current/ddl-rowsecurity.html
+- Neon driver: https://neon.com/docs/serverless/serverless-driver
+- Neon connection guide: https://neon.com/docs/connect/connect-from-any-app
 - Payment verification: https://paystack.com/docs/payments/verify-payments/
 - Webhook signatures: https://paystack.com/docs/payments/webhooks/
 - Pyodide worker use: https://pyodide.org/en/stable/usage/webworker.html

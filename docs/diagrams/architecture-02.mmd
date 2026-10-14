@@ -9,7 +9,7 @@ flowchart TB
         WORKER[Scheduled job worker]
     end
     subgraph MANAGED[Managed private data services]
-        AUTH[Supabase Auth]
+        AUTH[Neon Auth]
         DB[(PostgreSQL: RLS, functions, constraints)]
         STORE[Storage: private and public buckets]
     end
@@ -17,7 +17,7 @@ flowchart TB
         PAY[Paystack]
         RUN[Runner on separate origin]
     end
-    UI --> AUTH
+    HANDLERS --> AUTH
     UI --> HANDLERS
     HANDLERS --> GUARDS
     GUARDS --> MODULES

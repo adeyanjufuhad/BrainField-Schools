@@ -4,7 +4,7 @@
 
 BrainField Schools brings the public school website, academic administration, examinations, classroom resources, and school billing into one platform with separate workspaces for the people who use it.
 
-> **Project status: planning and architecture.** This repository contains the proposed specification, Mermaid diagrams, PDF documents, and implementation guide. No application, payment service, or student database is implemented yet. No school adoption, performance statistics, or deployment is claimed.
+> **Project status: landing-page implementation.** The Next.js website includes the supplied school logo, both Lagos campuses, telephone links, conceptual illustrations, and source-linked historical achievements. Neon PostgreSQL/Auth connection code is prepared but no Neon instance or school database is connected. Portals, payments, and student-data workflows remain planned. No production deployment or school endorsement is claimed.
 
 ## Documents
 
@@ -15,8 +15,10 @@ BrainField Schools brings the public school website, academic administration, ex
 | [Build guide](docs/BUILD-GUIDE.md) | Practical instructions for a two-person team, milestones, acceptance criteria, testing, and launch |
 | [Build guide PDF](docs/BrainField-Schools-Build-Guide.pdf) | Printable copy of the implementation guide |
 | [Decision register](docs/DECISIONS.md) | Agreed requirements, proposed choices, and questions for school leadership |
-| [Design guidance](DESIGN.md) | Blue palette, responsive layouts, accessibility, and interface states |
+| [Design guidance](DESIGN.md) | Green, red, and white palette, responsive layouts, accessibility, and interface states |
 | [Contributing](CONTRIBUTING.md) | Collaboration, review, and documentation workflow |
+| [Neon setup](docs/NEON-SETUP.md) | Database/Auth connection boundary, configuration, and remaining account setup |
+| [School content sources](docs/CONTENT-SOURCES.md) | Supplied identity/contact details, verified historical achievements, and source caveats |
 
 ## 1. Purpose and boundaries
 
@@ -70,28 +72,28 @@ Parent/guardian portal, attendance, announcements/calendar, admissions, library 
 
 ## 3. Recommended stack
 
-These are proposed implementation decisions. Confirm them during discovery and pin tested package versions when development begins.
+Neon PostgreSQL and Neon Auth are confirmed provider choices. The landing page uses pinned Next.js, React, Tailwind, and Radix icons; the remaining module choices are proposals. Confirm school policies during discovery.
 
 | Layer | Recommendation | Reason |
 | --- | --- | --- |
 | Language/runtime | TypeScript; Node.js 24 LTS | One language across the web application; supported runtime |
 | Application | Next.js App Router and React | Public website, portal pages, and server endpoints in one codebase |
-| Styling | Tailwind CSS, accessible Radix primitives | Consistent responsive interfaces with custom blue styling |
+| Styling | Tailwind CSS, accessible Radix primitives | Consistent responsive interfaces with the approved green, red, and white styling |
 | Forms/validation | React Hook Form and Zod | Clear form errors and shared input schemas; repeat validation on the server |
-| Database | Supabase-managed PostgreSQL | Relational academic records, constraints, transactions, SQL reporting |
-| Identity | Supabase Auth with server-side session handling | Staff invitations, student accounts, password recovery, privileged-user MFA |
+| Database | Neon-managed PostgreSQL | Relational academic records, constraints, transactions, SQL reporting |
+| Identity | Neon Auth with server-side session handling | Staff invitations, student accounts, password recovery, privileged-user MFA |
 | Authorisation | Server checks and PostgreSQL row-level security | Restrict records by school, role, assignment, and ownership |
-| Files | Supabase Storage | Private report cards/submissions; separate approved public media |
+| Files | Private object storage (provider to be configured) | Private report cards/submissions; separate approved public media |
 | Payments | Paystack hosted checkout | Keep card entry with the provider; verify and reconcile on the server |
 | Charts | Recharts | Director statistics with accessible table alternatives |
 | Editor | CodeMirror 6 | Programming editor, loaded only on programming pages |
 | Code execution | Separate-origin browser runner initially | Classroom practice without running student programs on the app server |
 | Testing | Vitest, Testing Library, Playwright, SQL/RLS tests | Cover academic rules, permissions, and complete user workflows |
-| Hosting | Vercel for the web app; Supabase for data | Managed services with separate staging and production environments |
+| Hosting | Vercel for the web app; Neon for database and authentication | Managed services with separate staging and production environments |
 | Background work | PostgreSQL job/outbox tables plus scheduled worker | Retryable notifications, reports, reconciliation, and exam finalisation |
 | Source control | GitHub and GitHub Actions | Reviewed changes, automated checks, and release records |
 
-The Next.js server owns business operations. Use PostgreSQL functions for atomic score transitions, publication, and payment allocation. Do not add microservices, Redis, Kubernetes, a second backend framework, or a native app at the start without a demonstrated need.
+Neon Auth establishes identity; school roles remain in application-owned PostgreSQL tables. Neon does not automatically set the identity context for application RLS. The Next.js server owns business operations. Use PostgreSQL functions for atomic score transitions, publication, and payment allocation. Do not add microservices, Redis, Kubernetes, a second backend framework, or a native app at the start without a demonstrated need.
 
 ## 4. System overview
 
@@ -99,7 +101,7 @@ The Next.js server owns business operations. Use PostgreSQL functions for atomic
 flowchart TB
     PEOPLE[Visitors, students, teachers, school leadership]
     WEB[Next.js public website and role-based portals]
-    AUTH[Supabase Auth]
+    AUTH[Neon Auth]
     API[Server handlers: validation and permissions]
     DOMAIN[School, results, CBT, resources, billing modules]
     DB[(PostgreSQL: records, RLS, transactions, audit)]
@@ -108,7 +110,7 @@ flowchart TB
     PAY[Paystack hosted checkout]
     RUN[Separate-origin programming runner]
     PEOPLE --> WEB
-    WEB --> AUTH
+    API --> AUTH
     WEB --> API
     API --> DOMAIN
     DOMAIN --> DB
@@ -154,9 +156,18 @@ Display dates and schedules in `Africa/Lagos`; store timestamps in UTC. Store mo
 
 An illustrative two-person schedule is 14–22 calendar weeks for the confirmed scope if both developers have relevant experience and school feedback arrives promptly. It is an estimate, not a deadline. A narrower academic MVP can be released earlier. Optional additions require separate estimates.
 
-## 8. Build and documentation workflow
+## 8. Run the website and maintain documentation
 
-There is no web app to run yet. Start with [the build guide](docs/BUILD-GUIDE.md), resolve [open decisions](docs/DECISIONS.md), then scaffold the app in `apps/web` without overwriting this README.
+The landing page runs without database secrets. From the repository root:
+
+```sh
+npm ci --prefix apps/web
+npm run dev
+```
+
+Open http://127.0.0.1:3001. For production verification use `npm run lint`, `npm run typecheck`, and `npm run build`. Browser checks run with `npm run test:e2e`; install Playwright Chromium first if needed. The initial portal route clearly explains that access is not available yet.
+
+See [Neon setup](docs/NEON-SETUP.md) for the server-only database/Auth configuration, [content sources](docs/CONTENT-SOURCES.md) for verified school facts and achievements, and [the build guide](docs/BUILD-GUIDE.md) for later phases. The public page does not require or invent a database connection. Robots indexing is disabled until school review.
 
 To regenerate the PDFs using Python 3.11 or newer:
 
@@ -186,7 +197,7 @@ The architecture is an original proposal; these official references support the 
 
 - [Next.js installation](https://nextjs.org/docs/app/getting-started/installation) and [deployment](https://nextjs.org/docs/app/getting-started/deploying)
 - [Node.js release lifecycle](https://nodejs.org/en/about/previous-releases)
-- [Supabase server-side authentication](https://supabase.com/docs/guides/auth/server-side/nextjs), [row-level security](https://supabase.com/docs/guides/database/postgres/row-level-security), [storage access control](https://supabase.com/docs/guides/storage/security/access-control), and [backups](https://supabase.com/docs/guides/platform/backups)
+- [Neon Auth](https://neon.com/docs/auth/quick-start/nextjs), [Neon PostgreSQL driver](https://neon.com/docs/serverless/serverless-driver), and [PostgreSQL row security](https://www.postgresql.org/docs/current/ddl-rowsecurity.html)
 - [Paystack verification](https://paystack.com/docs/payments/verify-payments/) and [webhook signatures](https://paystack.com/docs/payments/webhooks/)
 - [Pyodide worker execution](https://pyodide.org/en/stable/usage/webworker.html)
 - [Playwright](https://playwright.dev/docs/intro) and [Vercel Web Interface Guidelines](https://vercel.com/design/guidelines)

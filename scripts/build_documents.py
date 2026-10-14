@@ -14,10 +14,10 @@ from reportlab.platypus import (SimpleDocTemplate, Paragraph, Spacer, PageBreak,
 from reportlab.platypus.tableofcontents import TableOfContents
 
 ROOT = Path(__file__).resolve().parents[1]
-NAVY = colors.HexColor("#03045e")
-BLUE = colors.HexColor("#0077b6")
-PALE = colors.HexColor("#e9f5fb")
-INK = colors.HexColor("#24374a")
+NAVY = colors.HexColor("#386641")
+BLUE = colors.HexColor("#386641")
+PALE = colors.HexColor("#f3f6ee")
+INK = colors.HexColor("#386641")
 WIDTH, HEIGHT = A4
 CONTENT_WIDTH = WIDTH - 100
 
@@ -57,7 +57,7 @@ styles.add(ParagraphStyle(name="CaptionSchool", fontName=FONT, fontSize=8, leadi
 
 def inline(text):
     text = escape(text)
-    text = re.sub(r"\[([^\]]+)\]\((https?://[^)]+)\)", r'<link href="\2" color="#0077b6">\1</link>', text)
+    text = re.sub(r"\[([^\]]+)\]\((https?://[^)]+)\)", r'<link href="\2" color="#386641">\1</link>', text)
     text = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", r"\1 (\2)", text)
     text = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", text)
     text = re.sub(r"`([^`]+)`", r'<font name="' + MONO + r'">\1</font>', text)
@@ -76,7 +76,7 @@ class Document(SimpleDocTemplate):
 
 def footer(canvas, doc):
     canvas.saveState()
-    canvas.setStrokeColor(colors.HexColor("#c7deec"))
+    canvas.setStrokeColor(colors.HexColor("#dce4d7"))
     canvas.line(50, 43, WIDTH - 50, 43)
     canvas.setFont(FONT, 8)
     canvas.setFillColor(INK)
@@ -93,10 +93,10 @@ def table(rows):
     result = Table(cells, colWidths=widths, repeatRows=1, hAlign="LEFT")
     result.setStyle(TableStyle([
         ("BACKGROUND", (0, 0), (-1, 0), PALE),
-        ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, colors.HexColor("#f6fafc")]),
+        ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, colors.HexColor("#f7f9f3")]),
         ("VALIGN", (0, 0), (-1, -1), "TOP"),
         ("LINEBELOW", (0, 0), (-1, 0), 0.8, BLUE),
-        ("LINEBELOW", (0, 1), (-1, -1), 0.25, colors.HexColor("#dce7ee")),
+        ("LINEBELOW", (0, 1), (-1, -1), 0.25, colors.HexColor("#dce4d7")),
         ("LEFTPADDING", (0, 0), (-1, -1), 7),
         ("RIGHTPADDING", (0, 0), (-1, -1), 7),
         ("TOPPADDING", (0, 0), (-1, -1), 7),
@@ -112,8 +112,8 @@ def build(source_name, output_name, subtitle):
              Spacer(1, 15), Paragraph(subtitle, styles["TitleSchool"]),
              Paragraph("A practical blueprint for a Nigerian secondary school", styles["BodySchool"]),
              Spacer(1, 24), table([
-                 ["Edition", "Version 1.0 — 14 October 2026"],
-                 ["Status", "Proposed architecture and implementation plan. Application not built yet."],
+                 ["Edition", "Version 1.1 — 14 October 2026"],
+                 ["Status", "Landing page implemented. Neon integration prepared; school portals remain planned."],
                  ["Core workflow", "Subject teacher → Class teacher → VP Administration → Publication"],
                  ["Leadership", "Separate director dashboard for results and statistics"],
                  ["Scope decision", "Learning progress reports excluded"],

@@ -6,7 +6,7 @@ flowchart LR
     STAGE --> RELEASE[Approved release]
     RELEASE --> WEB[Vercel Next.js production]
     RELEASE --> MIG[Reviewed additive migrations]
-    MIG --> DB[(Production Supabase)]
+    MIG --> DB[(Production Neon PostgreSQL)]
     WEB --> DB
     WORKER[Authenticated scheduled worker] --> DB
     DB --> BACKUP[Database and separate storage backups]

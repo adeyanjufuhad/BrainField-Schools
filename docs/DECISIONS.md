@@ -12,14 +12,19 @@ Updated 14 October 2026. Confirmed means stated by the founders in the planning 
 | C04 | Subject teachers submit scores to the class teacher. Class teacher approves compiled results, then VP Administration provides final approval. |
 | C05 | Director has a separate dashboard for result viewing and statistics. |
 | C06 | Create a public GitHub repository named BrainField-Schools, with a comprehensive README, architecture in Mermaid, architecture PDF, and build guide. |
-| C07 | Discuss and document before implementing the application. |
+| C07 | Document first; the founder has now authorised landing-page implementation. |
+| C08 | Use #386641, #6a994e, #a7c957, #d00000, and #ffffff. This supersedes the earlier blue palette. |
+| C09 | Use Neon PostgreSQL and Neon Auth. |
+| C10 | Brainfield Schools Lagos; motto: Determination and Focus. Two campuses: Salolo main campus and Abule Egba, with equal visual prominence. |
+| C11 | Use the founder-supplied school logo and three supplied phone numbers. |
+| C12 | Research public achievements and publish source-linked historical highlights. |
 
 ## Proposed technical decisions
 
 | ID | Proposal | Reason |
 | --- | --- | --- |
 | P01 | Next.js modular monolith with TypeScript | Manageable for two developers |
-| P02 | Supabase PostgreSQL/Auth/Storage | Relational data and managed operations |
+| P02 | Neon PostgreSQL and Neon Auth are confirmed; private object storage remains to be selected | Founder-selected providers |
 | P03 | Server permission checks plus RLS | Defence against cross-user and cross-class access |
 | P04 | Atomic database functions for critical transitions | Approval/payment integrity under retries and concurrency |
 | P05 | Separate publication action after VP approval | Prevent accidental release |
@@ -27,7 +32,7 @@ Updated 14 October 2026. Confirmed means stated by the founders in the planning 
 | P07 | Director metrics default to published data | Avoid presenting draft performance as final |
 | P08 | Paystack hosted checkout in school's merchant account | Separate payment collection from developers |
 | P09 | Browser practice runner on separate origin | Keep student code away from portal credentials |
-| P10 | Vercel plus Supabase; bounded job worker | Simple deployment, expanded only when needed |
+| P10 | Vercel plus Neon; bounded job worker | Simple deployment, expanded only when needed |
 | P11 | Academic MVP before advanced modules | Validate core value early |
 | P12 | No open-source licence initially | Preserve ownership discussion before sale/build |
 

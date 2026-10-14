@@ -30,9 +30,9 @@ def main():
                 browser = candidate
                 break
     config = {"theme": "base", "themeVariables": {
-        "primaryColor": "#e9f5fb", "primaryTextColor": "#03045e",
-        "primaryBorderColor": "#0077b6", "lineColor": "#023e8a",
-        "secondaryColor": "#caf0f8", "tertiaryColor": "#ffffff",
+        "primaryColor": "#f3f6ee", "primaryTextColor": "#386641",
+        "primaryBorderColor": "#386641", "lineColor": "#386641",
+        "secondaryColor": "#a7c957", "tertiaryColor": "#ffffff",
         "fontFamily": "Arial, sans-serif", "fontSize": "18px"},
         "flowchart": {"htmlLabels": False, "curve": "linear"},
         "sequence": {"useMaxWidth": False, "wrap": True, "actorMargin": 35},
