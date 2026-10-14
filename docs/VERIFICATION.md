@@ -12,8 +12,6 @@ Verified locally on 14 October 2026 with Node.js 22.14, Next.js 16.4.0, React 19
 - Unconfigured Neon Auth returns HTTP 503 and no-store; it does not accept fake accounts or claim a live connection.
 - Documentation links, seven Mermaid source/render pairs, and PDF content checks passed. PDFs were regenerated for Neon and the green/red/white palette.
 
-## Dependency assessment
-
 ## Gallery refresh verification — 14 October 2026
 
 - Production build, ESLint, standalone TypeScript checks, and document checks passed after the Gallery refresh.
