@@ -14,6 +14,16 @@ Verified locally on 14 October 2026 with Node.js 22.14, Next.js 16.4.0, React 19
 
 ## Dependency assessment
 
+## Gallery refresh verification — 14 October 2026
+
+- Production build, ESLint, standalone TypeScript checks, and document checks passed after the Gallery refresh.
+- Updated browser suite: 23 passed, one intentionally skipped desktop copy of the mobile-menu test. Tests cover category/year/search filters, URL persistence, navigation, no-match reset, historical result labels, the missing 2025 results state, video controls and fallback links, and automated accessibility on both viewports.
+- Reviewed homepage and Gallery screenshots at desktop and mobile sizes; no horizontal overflow was detected. Both campus cards retain equal prominence.
+- YouTube integration tests stub the external iframe response. They verify click-to-load behaviour, the official video ID, accessible title, close control, and direct YouTube fallback; they do not certify unrestricted third-party playback.
+- The 2025 JAMB list remains unavailable. No student scores were invented. See [research and source notes](LANDING-RESEARCH.md).
+
+## Dependency assessment
+
 The production-dependency audit reported no vulnerabilities at verification. The full audit reported five high-severity entries in the development-only ESLint/fast-glob/micromatch/braces chain, originating from one unpatched braces advisory. The registry's current braces release was 3.0.3; no compatible patched release was available. The suggested automatic downgrade of Next.js lint tooling was not applied. This tooling does not process visitor input or ship as a production runtime dependency; revisit the advisory before upgrading or running lint on untrusted source patterns.
 
 The Neon Auth package is pinned to a beta release. No real Neon session, database query, migration, invitation, recovery, or role-authorization flow has been exercised because an authorised Neon environment is not connected. Those need a separate integration acceptance gate.

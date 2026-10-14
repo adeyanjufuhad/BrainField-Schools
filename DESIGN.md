@@ -33,3 +33,9 @@ Follow [Vercel Web Interface Guidelines](https://vercel.com/design/guidelines) a
 ## Landing-page content
 
 Give Salolo and Abule Egba equal-size campus cards; label Salolo as main campus. Use the supplied logo unchanged. Contact links use the three founder-provided numbers. Historical achievements require nearby source links and dates/editions; individual UTME scores must not appear as school averages. Original campus artwork is explicitly illustrative. Keep draft academic/facility copy non-specific until approved. See docs/CONTENT-SOURCES.md.
+
+## Gallery and editorial refresh
+
+The Pinterest and web references in docs/LANDING-RESEARCH.md inform a clearer editorial hierarchy, proof-led hero panels, distinct recent-story layouts, and a dedicated Gallery. The Gallery navigation leads to /gallery, with category/year/search filters represented in the URL. Source/year labels remain visible. Video artwork is original typography, and official YouTube media loads only after the visitor chooses to play. Keep a direct YouTube fallback.
+
+The homepage highlights the newer publicly reported science stories and reserves a clearly labelled area for 2025 JAMB results. Until a verified 2025 source is available, use an informative empty state rather than old scores, invented metrics, or a claimed complete cohort. Historic 2022 results remain in the Gallery archive.

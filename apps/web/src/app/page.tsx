@@ -1,10 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowDownIcon, ArrowRightIcon, ArrowTopRightIcon, CheckIcon, ChevronDownIcon, GlobeIcon, HeartIcon, LightningBoltIcon, MobileIcon, ReaderIcon, StarIcon } from "@radix-ui/react-icons";
+import { ArrowRightIcon, ArrowTopRightIcon, CheckIcon, ChevronDownIcon, GlobeIcon, HeartIcon, LightningBoltIcon, MobileIcon, ReaderIcon } from "@radix-ui/react-icons";
 import { Header } from "@/components/header";
-import { Brand } from "@/components/brand";
 import { LearningSpaces } from "@/components/learning-spaces";
-import { achievements, campuses, faqs, school } from "@/content/school";
+import { Footer } from "@/components/footer";
+import { AchievementArt } from "@/components/achievement-art";
+import { ChampionVideo } from "@/components/champion-video";
+import { Jamb2025 } from "@/components/jamb-2025";
+import { campuses, faqs, school } from "@/content/school";
+import { recentAchievements, championAchievement, championVideos, galleryHref } from "@/content/gallery";
 
 export default function Home() {
   return (
@@ -18,16 +22,15 @@ export default function Home() {
             <div className="eyebrow"><span className="eyebrow-rule" />Welcome to Brainfield Schools Lagos</div>
             <h1 id="hero-title">Bright minds.<br />Strong character.<br /><em>Endless possibilities.</em></h1>
             <p>A love of learning. The courage to try. The determination to go further. Your child’s next chapter starts here.</p>
-            <div className="hero-actions"><a href="#admissions" className="button button-red">Discover Brainfield <ArrowTopRightIcon /></a><a href="#our-school" className="hero-secondary">Get to know us <ArrowRightIcon /></a></div>
+            <div className="hero-actions"><a href="#admissions" className="button button-red">Discover Brainfield <ArrowTopRightIcon /></a><a href="#champions" className="hero-secondary">Meet our champions <ArrowRightIcon /></a></div>
             <div className="hero-location"><span className="location-dots"><span /><span /></span><a href="#campuses">Salolo–Alagbado</a><span className="location-separator" /><a href="#campuses">Abule Egba</a><span className="location-city">Lagos, Nigeria</span></div>
           </div>
-          <figure className="hero-visual">
+          <figure className="hero-visual hero-editorial-visual">
             <div className="hero-art-frame">
-              <div className="hero-art-label"><span /> A world of discovery</div>
+              <div className="hero-art-label"><span /> Rooted in Lagos. Looking ahead.</div>
               <Image src="/illustrations/brainfield-campus.svg" width={640} height={650} priority alt="Conceptual illustration of students, books, and a green school building; not the actual Brainfield campus" className="hero-art" />
-              <div className="hero-art-bottom"><span>LEARN. DISCOVER. BECOME.</span><ArrowDownIcon /></div>
             </div>
-            <div className="motto-note"><span className="note-icon"><StarIcon /></span><span>Small steps today.<br /><strong>Remarkable futures tomorrow.</strong></span></div>
+            <div className="hero-proof-grid"><Link href="/gallery?category=achievements&year=2025" className="hero-proof hero-proof-global"><span className="proof-top">2025 / GLOBAL OPPORTUNITIES<ArrowTopRightIcon /></span><strong>Lagos → Tokyo</strong><span>Sakura Science Programme selection</span></Link><Link href="/gallery?category=achievements&year=2024" className="hero-proof hero-proof-science"><span className="proof-top">INTERSWITCHSPAK 6.0<ArrowTopRightIcon /></span><strong>Brilliance on stage.</strong><span>Celebrating a Brainfield semi-finalist</span></Link></div>
             <figcaption>Original illustration · Campus photography to follow</figcaption>
           </figure>
         </section>
@@ -50,12 +53,14 @@ export default function Home() {
         <section id="school-life" className="section-space page-shell" aria-labelledby="life-title"><div className="section-heading"><div><span className="eyebrow">Beyond the textbook</span><h2 id="life-title">Make room for<br /><em>“What if?”</em></h2></div><p>Discover the ideas behind our science and technology learning spaces. Ask the school about current facilities and arrange a visit.</p></div><LearningSpaces /></section>
 
         <section id="achievements" className="achievements-section section-space" aria-labelledby="achievements-title"><div className="page-shell">
-          <div className="section-heading"><div><span className="eyebrow">The effort. The focus. The achievement.</span><h2 id="achievements-title">Small beginnings.<br /><em>National recognition.</em></h2></div><p>Celebrating publicly reported achievements by Brainfield students. Every story below links to its source.</p></div>
-          <div className="achievement-layout"><article className="achievement-spotlight"><div className="award-emblem" aria-hidden="true"><StarIcon /><span>STEM</span></div><span className="eyebrow">{achievements[0].edition} · Winner</span><h3>{achievements[0].title}</h3><span className="achievement-person">{achievements[0].name}</span><p>{achievements[0].description}</p><a href={achievements[0].source} target="_blank" rel="noopener noreferrer" className="text-link">Read the Interswitch report <ArrowTopRightIcon /><span className="sr-only"> (opens in a new tab)</span></a></article>
-            <div className="achievement-list">{achievements.slice(1).map(item => <article key={item.category}><span className="eyebrow">{item.category}</span><h3>{item.title}</h3><p><strong>{item.name}.</strong> {item.description}</p><a href={item.source} target="_blank" rel="noopener noreferrer" className="text-link">Read the {item.sourceName} report <ArrowTopRightIcon /><span className="sr-only"> (opens in a new tab)</span></a></article>)}</div>
-          </div>
-          <article className="jamb-highlight"><div className="jamb-score"><strong>354<span>/400</span></strong><span>2022 UTME · Historical result</span></div><div><span className="eyebrow">A moment worth celebrating</span><h3>Determination, in numbers.</h3><p>PUNCH reported Dokun Jubril among the high scorers in the 2022 UTME, with 354 marks. A personal achievement, rather than a school-wide average.</p></div><a href="https://punchng.com/jamb-releases-cut-off-says-admission-ends-dec-31/" target="_blank" rel="noopener noreferrer" className="round-link" aria-label="Read PUNCH’s report of the 2022 UTME high scorers (opens in a new tab)"><ArrowTopRightIcon /></a></article>
+          <div className="section-heading"><div><span className="eyebrow">The effort. The focus. The achievement.</span><h2 id="achievements-title">Bright minds.<br /><em>Bigger horizons.</em></h2></div><div className="section-heading-aside"><p>Recent publicly reported highlights, from international science opportunities to the national competition stage.</p><Link href={galleryHref("achievements")} className="text-link">Explore the achievement gallery <ArrowTopRightIcon /></Link></div></div>
+          <div className="recent-stories">{recentAchievements.map(story => <article key={story.id} className="recent-story"><Link href={`/gallery?category=achievements&year=${story.year}`} aria-label={`Explore ${story.label}`}><AchievementArt theme={story.theme} /></Link><div className="recent-story-copy"><span className="eyebrow">{story.label}</span><h3>{story.title}</h3><p><strong>{story.student}.</strong> {story.description}</p><a href={story.source} target="_blank" rel="noopener noreferrer" className="text-link">Read the {story.sourceName} report <ArrowTopRightIcon /><span className="sr-only"> (opens in a new tab)</span></a></div></article>)}</div>
+          <div className="champion-ribbon"><span className="ribbon-edition">INTERSWITCHSPAK 3.0</span><div><strong>{championAchievement.student} · National champion</strong><span>Celebrating a ₦7.5 million scholarship-winning achievement.</span></div><a href="#champions" className="text-link">Watch his story <ArrowTopRightIcon /></a></div>
         </div></section>
+
+        <Jamb2025 />
+
+        <section id="champions" className="champions-section section-space" aria-labelledby="champions-title"><div className="page-shell"><div className="section-heading"><div><span className="eyebrow">The people behind the achievement</span><h2 id="champions-title">Meet the mind.<br /><em>Watch the moment.</em></h2></div><Link href={galleryHref("videos")} className="text-link">More films in the Gallery <ArrowTopRightIcon /></Link></div><ChampionVideo video={championVideos[0]} featured /></div></section>
 
         <section id="campuses" className="section-space page-shell campuses-section" aria-labelledby="campus-title"><div className="section-heading"><div><span className="eyebrow">Find your community</span><h2 id="campus-title">Two campuses.<br /><em>One Brainfield.</em></h2></div><p>Come and get to know us. Speak with the school to plan your visit to either of our Lagos campuses.</p></div><div className="campus-grid">{campuses.map((campus, index) => <article key={campus.name} className="campus-card"><div className="campus-top"><span className="campus-index">0{index + 1}</span><span className="campus-label">{campus.label}</span><GlobeIcon /></div><h3>{campus.name}</h3><address>{campus.address}</address><a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`Brainfield Schools ${campus.address}`)}`} target="_blank" rel="noopener noreferrer" className="text-link">Find on Google Maps <ArrowTopRightIcon /><span className="sr-only"> (opens in a new tab)</span></a></article>)}</div></section>
 
@@ -63,7 +68,7 @@ export default function Home() {
 
         <section className="section-space page-shell faq-section" aria-labelledby="faq-title"><div><span className="eyebrow">A little more information</span><h2 id="faq-title">Good questions.<br /><em>A clear place to start.</em></h2></div><div className="faq-list">{faqs.map(item => <details key={item.question}><summary>{item.question}<ChevronDownIcon /></summary><p>{item.answer}</p></details>)}</div></section>
       </main>
-      <footer className="site-footer"><div className="page-shell"><div className="footer-main"><div><Link href="/" aria-label="Brainfield Schools Lagos home"><Brand /></Link><p>Determination and Focus.<br />Salolo & Abule Egba, Lagos.</p></div><nav aria-label="Footer navigation"><a href="#our-school">Our school</a><a href="#academics">Academics</a><a href="#achievements">Achievements</a><a href="#campuses">Our campuses</a><Link href="/portal">School portal <ArrowTopRightIcon /></Link></nav><a href="#admissions" className="footer-cta">A brighter future<br /><em>starts with a conversation.</em><span>Get in touch <ArrowTopRightIcon /></span></a></div><div className="footer-bottom"><span>© {new Date().getFullYear()} Brainfield Schools Lagos</span><span>Website preview · Campus artwork is illustrative</span><a href="#main-content">Back to top ↑</a></div></div></footer>
+      <Footer />
     </>
   );
 }

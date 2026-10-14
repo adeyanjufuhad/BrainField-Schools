@@ -15,9 +15,11 @@ test("school identity, campuses, contact links, and sourced historical achieveme
   for (const phone of ["8032367229", "7084370636", "8024147831"]) {
     await expect(page.locator(`a[href="tel:+234${phone}"]`).first()).toBeVisible();
   }
-  await expect(page.locator("#achievements")).toContainText("Jubril Dokun");
-  await expect(page.locator(".jamb-highlight")).toContainText("2022 UTME");
-  await expect(page.locator("#achievements a[href^='https://']")).toHaveCount(4);
+  await expect(page.locator("#achievements")).toContainText("Babalola David");
+  await expect(page.locator("#achievements")).toContainText("InterswitchSPAK 6.0");
+  await expect(page.locator("#jamb-2025")).toContainText("2025 results will appear here");
+  await expect(page.locator("#jamb-2025")).not.toContainText("354");
+  await expect(page.locator("#achievements a[href^='https://']")).toHaveCount(2);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   expect(errors).toEqual([]);
 });
@@ -51,9 +53,9 @@ test("mobile navigation expands and closes after selecting a section", async ({ 
   await page.getByRole("button", { name: "Open menu" }).click();
   const navigation = page.getByRole("navigation", { name: "Mobile navigation" });
   await expect(navigation).toBeVisible();
-  await navigation.getByRole("link", { name: "Achievements" }).click();
+  await navigation.getByRole("link", { name: "Gallery" }).click();
   await expect(navigation).toHaveCount(0);
-  await expect(page).toHaveURL(/#achievements$/);
+  await expect(page).toHaveURL(/\/gallery$/);
 });
 
 test("landing page passes automated WCAG A/AA checks", async ({ page }) => {

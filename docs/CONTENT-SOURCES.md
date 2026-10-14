@@ -27,6 +27,10 @@ Some search results concern **Brainfield Schools in Port Harcourt** or schools o
 
 ## Imagery and draft copy
 
+### Gallery additions, 14 October 2026
+
+The Gallery and updated homepage add the 2025 Sakura Science selection, 2024 InterswitchSPAK 6.0 semi-finalist report, and official YouTube champion/finale videos. See [the research register](LANDING-RESEARCH.md) for exact URLs, verification scope, and date/identity cautions. The school’s 2025 JAMB cohort list could not be verified online; the 2025 section therefore displays a pending-publication state. The existing 2022 UTME highlight is retained only in the historical Gallery archive. Published record counts reflect curated public entries, not student enrolment or all students’ results.
+
 The green campus and learning-space artwork is original conceptual illustration, explicitly labelled and not presented as photographs of either campus. No third-party student photographs are copied. Replace illustrations with approved school photographs only when supplied/authorised.
 
 Headlines and descriptions express the site's proposed editorial direction. They do not assert specific facility equipment, accreditation, admissions availability, dates, fees, student counts, pass rates, testimonials, or programmes not confirmed by the school. The science/ICT section invites visitors to ask about current facilities. Logo, motto, addresses, and phone numbers are supplied facts; award highlights have explicit sources.

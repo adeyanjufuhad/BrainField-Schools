@@ -19,6 +19,7 @@ BrainField Schools brings the public school website, academic administration, ex
 | [Contributing](CONTRIBUTING.md) | Collaboration, review, and documentation workflow |
 | [Neon setup](docs/NEON-SETUP.md) | Database/Auth connection boundary, configuration, and remaining account setup |
 | [School content sources](docs/CONTENT-SOURCES.md) | Supplied identity/contact details, verified historical achievements, and source caveats |
+| [Landing-page and Gallery research](docs/LANDING-RESEARCH.md) | Pinterest/web inspiration, newer achievement sources, official YouTube films, and the 2025 results source gap |
 
 ## 1. Purpose and boundaries
 
@@ -166,6 +167,8 @@ npm run dev
 ```
 
 Open http://127.0.0.1:3001. For production verification use `npm run lint`, `npm run typecheck`, and `npm run build`. Browser checks run with `npm run test:e2e`; install Playwright Chromium first if needed. The initial portal route clearly explains that access is not available yet.
+
+The Gallery is at `/gallery`, with category, year, and student/story search filters. It includes newer source-linked science highlights and official YouTube videos that load on request. The homepage has a dedicated 2025 JAMB area; no verified public 2025 cohort list was found, so that area remains explicitly pending. Historical 2022 scores appear only in the dated archive. Public Gallery entries are maintained in `apps/web/src/content/gallery.ts`; no private student-result database is exposed.
 
 See [Neon setup](docs/NEON-SETUP.md) for the server-only database/Auth configuration, [content sources](docs/CONTENT-SOURCES.md) for verified school facts and achievements, and [the build guide](docs/BUILD-GUIDE.md) for later phases. The public page does not require or invent a database connection. Robots indexing is disabled until school review.
 
