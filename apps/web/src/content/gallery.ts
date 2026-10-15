@@ -1,9 +1,9 @@
 /** Publicly reported highlights only. This is not a complete student-result database. */
-export type GalleryCategory = "all" | "achievements" | "results" | "videos";
+export type GalleryCategory = "all" | "achievements" | "results" | "videos" | "photos";
 
 type PublicStory = {
   id: string;
-  category: Exclude<GalleryCategory, "all">;
+  category: Exclude<GalleryCategory, "all" | "photos">;
   year: number;
   label: string;
   title: string;
@@ -15,7 +15,7 @@ type PublicStory = {
 };
 
 export type Achievement = PublicStory & { category: "achievements"; theme: "global" | "science" | "champion" };
-export type PublicResult = PublicStory & { category: "results"; score: number; maximum: number };
+export type PublicResult = PublicStory & { category: "results"; score: number; maximum: number; subjects?: { label: string; score: number }[] };
 export type ChampionVideo = PublicStory & { category: "videos"; videoId: string; duration: string };
 export type GalleryEntry = Achievement | PublicResult | ChampionVideo;
 
@@ -29,10 +29,10 @@ export const recentAchievements: Achievement[] = [
   },
   {
     id: "spak-6-semifinal", category: "achievements", year: 2024, theme: "science",
-    label: "2024 · InterswitchSPAK 6.0", title: "Taking our place among the semi-finalists.", student: "David Babalola",
-    description: "Named among the InterswitchSPAK 6.0 semi-finalists in a report published on 27 November 2024, representing Brainfield College, Salolo, Lagos.",
-    source: "https://www.businessjournalng.com/interswitchspak-6-0-the-race-to-discover-nigerias-next-stem-champion/", sourceName: "Business Journal",
-    note: "Semi-finalist recognition; this is not a claim that Brainfield won edition 6.0.",
+    label: "2024 · InterswitchSPAK 6.0", title: "Fourth place on the national stage.", student: "David Babalola",
+    description: "The school’s published 2025 poster reports fourth place in InterswitchSPAK 6.0. Earlier reporting also named David among the edition’s semi-finalists, representing Brainfield College, Salolo, Lagos.",
+    source: "https://web.facebook.com/photo/?fbid=680714391385129", sourceName: "Brainfield Schools Lagos",
+    note: "Fourth place is attributed to the school’s poster. The earlier Business Journal report independently supports semi-finalist participation; neither source identifies David as the winner of edition 6.0.",
   },
 ];
 
@@ -45,12 +45,17 @@ export const championAchievement: Achievement = {
 };
 
 export const archivedAchievements: Achievement[] = [
+  { id: "jets-2024", category: "achievements", year: 2024, theme: "global", label: "2024 · National JETS", title: "National science recognition.", student: "Babalola David", description: "The school’s 2025 poster identifies Babalola David as a 2024 national JETS champion. His subsequent Sakura Science Programme selection is separately reported by Edugist.", source: "https://web.facebook.com/photo/?fbid=680714391385129", sourceName: "Brainfield Schools Lagos", note: "School-reported recognition. Lagos State’s combined medals are not attributed to Brainfield alone." },
+  { id: "eko-stem-2021", category: "achievements", year: 2021, theme: "science", label: "2021 · EKO STEM Quiz", title: "A place on the EKO STEM podium.", student: "Brainfield’s EKO STEM participants", description: "The school’s competition archive includes a November 2021 finals scoreboard placing Olajide first and Dokun second, alongside photographs of participants and presenters.", source: "https://web.facebook.com/photo/?fbid=110580044941576", sourceName: "Brainfield Schools Lagos", note: "The dated scoreboard is retained in the photo archive. Mixed-school event photographs are not presented as entirely Brainfield students." },
+  { id: "boab-2021", category: "achievements", year: 2021, theme: "champion", label: "2021 · Beautiful Ones Are Born", title: "Celebrating effort together.", student: "Brainfield’s BOAB team", description: "School-shared archival photographs show the student team at the Beautiful Ones Are Born grand finale and a medal presentation.", source: "https://web.facebook.com/photo/?fbid=108845108448403", sourceName: "Brainfield Schools Lagos", note: "The photographs document participation and recognition without assigning an unverified student name or competition ranking." },
   championAchievement,
   { id: "physics-2021", category: "achievements", year: 2021, theme: "science", label: "2021 · National physics", title: "Representing Lagos. Taking first place.", student: "Seidu Samuel", description: "Part of the Lagos team reported as winning first place at the 2021 national physics competition.", source: "https://punchng.com/lagos-awards-varsity-scholarships-to-best-wassce-students/", sourceName: "PUNCH" },
   { id: "chemistry-2021", category: "achievements", year: 2021, theme: "science", label: "2021 · Oluwole Awokoya Chemistry", title: "Excellence across the sciences.", student: "Seidu Samuel", description: "Reported as the second-place finisher in the 2021 Oluwole Awokoya Chemistry Competition.", source: "https://www.thisdaylive.com/2021/11/17/lagos-awards-scholarship-to-2020-best-wassce-students/", sourceName: "THISDAY" },
 ];
 
 export const publicJambResults: PublicResult[] = [
+  { id: "utme-david-2025", category: "results", year: 2025, label: "2025 UTME · School-published highlight", title: "A 364-point achievement.", student: "Babalola David", score: 364, maximum: 400, description: "Brainfield’s published 2025 results poster reports 364 for Babalola David: English 73, Physics 96, Mathematics 98 and Chemistry 97.", source: "https://web.facebook.com/photo/?fbid=680714391385129", sourceName: "Brainfield Schools Lagos", subjects: [{ label: "English", score: 73 }, { label: "Physics", score: 96 }, { label: "Mathematics", score: 98 }, { label: "Chemistry", score: 97 }], note: "Attributed to the school’s public poster, rather than a private JAMB account or an independently verified national ranking." },
+  { id: "utme-victoria-2025", category: "results", year: 2025, label: "2025 UTME · School-published highlight", title: "Determination, in every subject.", student: "Ayomide Victoria", score: 364, maximum: 400, description: "The school’s 2025 UTME poster reports 364 for Ayomide Victoria: English 75, Physics 98, Mathematics 97 and Chemistry 94.", source: "https://web.facebook.com/photo/?fbid=695876236535611", sourceName: "Brainfield Schools Lagos", subjects: [{ label: "English", score: 75 }, { label: "Physics", score: 98 }, { label: "Mathematics", score: 97 }, { label: "Chemistry", score: 94 }], note: "An individual school-published result. The original posters include further student highlights; unclear names are not guessed." },
   { id: "utme-dokun-2022", category: "results", year: 2022, label: "2022 UTME · Historical highlight", title: "Determination, in numbers.", student: "Dokun Jubril", score: 354, maximum: 400, description: "PUNCH reported Dokun Jubril among the high scorers in the 2022 UTME. School affiliation is corroborated by Interswitch’s Brainfield champion report.", source: "https://punchng.com/jamb-releases-cut-off-says-admission-ends-dec-31/", sourceName: "PUNCH", note: "An individual historical score, not a school average, pass rate, or complete cohort list." },
 ];
 

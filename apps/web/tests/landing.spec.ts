@@ -8,6 +8,12 @@ test("school identity, campuses, contact links, and sourced historical achieveme
   await expect(page).toHaveTitle(/Brainfield Schools Lagos/);
   await expect(page.getByRole("heading", { level: 1 })).toContainText("Bright minds.");
   await expect(page.locator(".brand-crest").first()).toBeVisible();
+  const heroPhoto = page.locator(".hero-art");
+  await expect(heroPhoto).toHaveAttribute("alt", /Jubril Dokun/);
+  await expect(heroPhoto).toHaveJSProperty("complete", true);
+  expect(await heroPhoto.evaluate((image: HTMLImageElement) => image.naturalWidth)).toBeGreaterThan(0);
+  await expect(page.locator(".hero-visual figcaption")).toContainText("Photo: Brainfield Schools Lagos");
+  await expect(page.locator('img[src*="brainfield-campus.svg"]')).toHaveCount(0);
   await expect(page.locator("#campuses address").first()).toContainText("39/40 Powerline Avenue");
   await expect(page.locator("#campuses address").last()).toContainText("32/34 Ekoro Road");
   const campusWidths = await page.locator(".campus-card").evaluateAll(items => items.map(item => item.getBoundingClientRect().width));
@@ -17,23 +23,31 @@ test("school identity, campuses, contact links, and sourced historical achieveme
   }
   await expect(page.locator("#achievements")).toContainText("Babalola David");
   await expect(page.locator("#achievements")).toContainText("InterswitchSPAK 6.0");
-  await expect(page.locator("#jamb-2025")).toContainText("2025 results will appear here");
+  await expect(page.locator("#jamb-2025")).toContainText("Babalola David");
   await expect(page.locator("#jamb-2025")).not.toContainText("354");
+  await expect(page.locator("#jamb-2025")).toContainText("Ayomide Victoria");
+  await expect(page.locator("#jamb-2025")).toContainText("364");
   await expect(page.locator("#achievements a[href^='https://']")).toHaveCount(2);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   expect(errors).toEqual([]);
 });
 
-test("learning-space tabs support keyboard selection and update their content", async ({ page }) => {
+test("student-moment tabs support keyboard selection and show sourced event photographs", async ({ page }) => {
   await page.goto("/");
-  const science = page.getByRole("tab", { name: /Science & discovery/ });
+  const science = page.getByRole("tab", { name: /Science opportunities/ });
   await science.focus();
   await page.keyboard.press("ArrowRight");
-  await expect(page.getByRole("tab", { name: /ICT & programming/ })).toBeFocused();
-  await expect(page.getByRole("tabpanel")).toContainText("creative builders");
+  await expect(page.getByRole("tab", { name: /National competitions/ })).toBeFocused();
+  await expect(page.getByRole("tabpanel")).toContainText("winning moment");
+  await expect(page.getByRole("tabpanel").getByRole("img", { name: /Jubril Dokun/ })).toHaveAttribute("alt", /Jubril Dokun/);
   await page.keyboard.press("Home");
   await expect(science).toHaveAttribute("aria-selected", "true");
-  await expect(page.getByRole("tabpanel")).toContainText("Hands-on discovery");
+  await expect(page.getByRole("tabpanel")).toContainText("opens new doors");
+  const delegationPhoto = page.getByRole("tabpanel").getByRole("img", { name: /Lagos Sakura Science Programme delegation/ });
+  await expect(delegationPhoto).toHaveAttribute("alt", /Lagos Sakura Science Programme delegation/);
+  await expect(delegationPhoto).toHaveJSProperty("complete", true);
+  expect(await delegationPhoto.evaluate((image: HTMLImageElement) => image.naturalWidth)).toBeGreaterThan(0);
+  await expect(page.getByRole("tabpanel")).toContainText("Photo: Edugist");
 });
 
 test("FAQ disclosure and honest portal availability", async ({ page }) => {
@@ -60,7 +74,7 @@ test("mobile navigation expands and closes after selecting a section", async ({ 
 
 test("landing page passes automated WCAG A/AA checks", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("tab", { name: /ICT & programming/ }).click();
+  await page.getByRole("tab", { name: /National competitions/ }).click();
   const result = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
   expect(result.violations).toEqual([]);
 });
@@ -70,4 +84,36 @@ test("unconfigured authentication fails clearly without accepting credentials", 
   expect(response.status()).toBe(503);
   expect(await response.json()).toEqual({ error: "School authentication is not configured yet." });
   expect(response.headers()["cache-control"]).toBe("no-store");
+});
+
+test("image slideshow advances automatically and can be paused", async ({ page }) => {
+  await page.clock.install();
+  await page.goto("/");
+  const slideshow = page.getByRole("region", { name: "School awards and published JAMB results" });
+  await expect(slideshow.getByRole("img")).toHaveAttribute("alt", /Jubril Dokun/);
+  await expect(slideshow.getByRole("button")).toHaveCount(1);
+  await expect(slideshow.getByRole("heading")).toHaveCount(0);
+  await page.clock.runFor(6100);
+  await expect(slideshow.getByRole("img")).toHaveAttribute("alt", /2025 UTME score of 364/);
+  await slideshow.getByRole("button", { name: "Pause slideshow" }).click();
+  await page.mouse.move(0, 0);
+  await page.clock.runFor(12000);
+  await expect(slideshow.getByRole("img")).toHaveAttribute("alt", /2025 UTME score of 364/);
+  await slideshow.getByRole("button", { name: "Play slideshow" }).click();
+  await page.getByRole("heading", { level: 1 }).click();
+  await page.mouse.move(0, 0);
+  await page.clock.runFor(6100);
+  await expect(slideshow.getByRole("img")).toHaveAttribute("alt", /2025 UTME results poster, including/);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});
+
+test("image slideshow stays still for reduced motion", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.clock.install();
+  await page.goto("/");
+  const slideshow = page.getByRole("region", { name: "School awards and published JAMB results" });
+  await page.clock.runFor(18000);
+  await expect(slideshow.getByRole("img")).toHaveAttribute("alt", /Jubril Dokun/);
+  await expect(slideshow.getByRole("button")).toHaveCount(0);
+  await expect(slideshow.getByRole("img")).toHaveCSS("animation-name", "none");
 });

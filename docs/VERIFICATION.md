@@ -20,6 +20,18 @@ Verified locally on 14 October 2026 with Node.js 22.14, Next.js 16.4.0, React 19
 - YouTube integration tests stub the external iframe response. They verify click-to-load behaviour, the official video ID, accessible title, close control, and direct YouTube fallback; they do not certify unrestricted third-party playback.
 - The 2025 JAMB list remains unavailable. No student scores were invented. See [research and source notes](LANDING-RESEARCH.md).
 
+## Real-photo update — 15 October 2026
+
+The conceptual hero and learning-space illustrations were replaced with two verified public event photographs. Homepage achievement cards, relevant Gallery cards and champion video posters also use the sourced photographs. [Photograph provenance](PHOTO-SOURCES.md) records the original publishers, URLs, identity checks and contextual limitations.
+
+Production build, ESLint, TypeScript and documentation checks passed. All 23 applicable desktop/mobile browser checks passed across the suite and the targeted rerun after correcting an ambiguous photo-test selector; the desktop copy of the mobile-menu check remains intentionally skipped. Tests now verify actual image decoding, source captions, correct alt text, keyboard photo-tab selection and the absence of the conceptual hero image. Accessibility checks passed for the homepage and Gallery on both viewports.
+
+## Awards and results carousel — 15 October 2026
+
+The homepage hero now has six manual slides: five verified achievement records and the published 2022 individual UTME result. Two slides use the verified event photographs; records without an attributable photograph use labelled award/score cards. Each slide retains its source and edition/year. No 2025 JAMB results have been invented.
+
+Production build and ESLint passed. The updated desktop/mobile browser suite passed 25 checks, with one intentional desktop skip for the mobile-only menu check. Carousel coverage includes next/previous controls, selectors, keyboard arrows, wraparound, the historical score label, source links, horizontal overflow and automated accessibility. Publication was initially held by automatic approval review; the founder explicitly approved the selected 18 photos on 15 October 2026.
+
 ## Dependency assessment
 
 The production-dependency audit reported no vulnerabilities at verification. The full audit reported five high-severity entries in the development-only ESLint/fast-glob/micromatch/braces chain, originating from one unpatched braces advisory. The registry's current braces release was 3.0.3; no compatible patched release was available. The suggested automatic downgrade of Next.js lint tooling was not applied. This tooling does not process visitor input or ship as a production runtime dependency; revisit the advisory before upgrading or running lint on untrusted source patterns.
@@ -28,4 +40,13 @@ The Neon Auth package is pinned to a beta release. No real Neon session, databas
 
 ## Remaining content/launch work
 
-School-approved campus photographs, academic/facility particulars, admission dates/requirements, final copy approval, and permission to feature historical student highlights remain to be confirmed. The supplied logo and contacts are incorporated. Search indexing remains disabled for this preview. There is no production deployment, real student-data import, or live payment integration.
+School-approved campus photographs, academic/facility particulars, admission dates/requirements, final copy approval remain to be confirmed. The founder approved the selected competition photos and public results posters for GitHub publication. The supplied logo and contacts are incorporated. Search indexing remains disabled for this preview. There is no production deployment, real student-data import, or live payment integration.
+
+## Uploaded photo archive and React Bits — 15 October 2026
+
+The completed local update contains 18 source-linked photographs and a 17-slide manual carousel. Production build (including TypeScript), ESLint, document validation and git diff whitespace checks passed. The final desktop/mobile Playwright run passed 29 checks, with one intentional desktop skip for mobile navigation. Coverage includes source-linked 2025 results, photo filters, full-size links, carousel selectors, arrows, wraparound, responsive overflow, reduced motion and automated WCAG A/AA checks. Desktop and mobile screenshots were visually reviewed. Both excluded full JAMB-slip originals were hash-checked against the 18 exported assets: zero matches. A local ZIP contains only the selected public photo assets and their provenance document. The founder explicitly approved public GitHub publication of the selected 18 photos on 15 October 2026.
+
+
+## Image-only slideshow — 15 October 2026
+
+The founder requested removal of the carousel presentation. The final hero has 17 uncropped images rotating every six seconds, a small pause control and no arrows, dots or large caption panel. Source attribution remains in the Gallery and accessible figure descriptions. Production build and ESLint passed. Final browser suite: 31 passed, one intentional desktop skip for the mobile-only menu check. Tests verify automatic advancement, pause/resume, reduced-motion static behaviour, source content, responsive layout, Gallery filters and automated accessibility. The complete React Bits licence was restored during the publication review. The founder explicitly authorised publishing the selected 18 photos and website changes to the public repository.

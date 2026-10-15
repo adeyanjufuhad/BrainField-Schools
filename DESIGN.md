@@ -1,6 +1,6 @@
 # BrainField Schools design guidance
 
-Status: landing-page design implemented; founder-supplied school logo is in use. School photographs remain pending.
+Status: landing-page design implemented; founder-supplied school logo is in use. Verified public event photographs now feature Brainfield students. Current classroom and campus photographs remain pending.
 
 ## Visual direction
 
@@ -32,10 +32,21 @@ Follow [Vercel Web Interface Guidelines](https://vercel.com/design/guidelines) a
 
 ## Landing-page content
 
-Give Salolo and Abule Egba equal-size campus cards; label Salolo as main campus. Use the supplied logo unchanged. Contact links use the three founder-provided numbers. Historical achievements require nearby source links and dates/editions; individual UTME scores must not appear as school averages. Original campus artwork is explicitly illustrative. Keep draft academic/facility copy non-specific until approved. See docs/CONTENT-SOURCES.md.
+Give Salolo and Abule Egba equal-size campus cards; label Salolo as main campus. Use the supplied logo unchanged. Contact links use the three founder-provided numbers. Historical achievements require nearby source links and dates/editions; individual UTME scores must not appear as school averages. The hero and student stories use verified, source-attributed event photographs; do not imply they show a campus or classroom. Keep draft academic/facility copy non-specific until approved. See docs/CONTENT-SOURCES.md.
 
 ## Gallery and editorial refresh
 
-The Pinterest and web references in docs/LANDING-RESEARCH.md inform a clearer editorial hierarchy, proof-led hero panels, distinct recent-story layouts, and a dedicated Gallery. The Gallery navigation leads to /gallery, with category/year/search filters represented in the URL. Source/year labels remain visible. Video artwork is original typography, and official YouTube media loads only after the visitor chooses to play. Keep a direct YouTube fallback.
+The Pinterest and web references in docs/LANDING-RESEARCH.md inform a clearer editorial hierarchy, proof-led hero panels, distinct recent-story layouts, and a dedicated Gallery. The Gallery navigation leads to /gallery, with category/year/search filters represented in the URL. Source/year labels remain visible. Video posters combine the credited Interswitch champion photograph with typography, and official YouTube media loads only after the visitor chooses to play. Keep a direct YouTube fallback.
 
-The homepage highlights the newer publicly reported science stories and reserves a clearly labelled area for 2025 JAMB results. Until a verified 2025 source is available, use an informative empty state rather than old scores, invented metrics, or a claimed complete cohort. Historic 2022 results remain in the Gallery archive.
+The homepage highlights recent science stories and school-published 2025 UTME highlights. Attribute the individual results and posters to their source. Historical 2022 results remain dated in the archive; do not imply a complete private cohort database.
+
+
+## School photographs and slideshow
+
+The hero uses a simple image-only slideshow of 17 real competition photos and results posters. Images change every six seconds and remain uncropped. There is no carousel card, large caption, arrow control or dot selector. A small 44px pause button allows visitors to stop autoplay. Hover/focus and background tabs suspend advancement. Reduced-motion preference disables autoplay and fading.
+
+The School photos Gallery contains 18 selected source-linked originals, with year/search filters, credits and full-size links. The dated admissions/awards flyer is available only in the archive. Preserve descriptive alt text and accurate mixed-school delegation captions. Never substitute an older champion photo for a different student. Current classroom and campus photographs remain pending.
+
+The 2025 results section shows school-reported 364/400 highlights for Babalola David and Ayomide Victoria. Public results posters provide the source; no full JAMB slips or private identifiers are exported. Provenance is documented in docs/SCHOOL-MEDIA.md.
+
+React Bits FadeContent provides a restrained, once-only reveal on photo/story sections, respecting reduced motion and preserving readable server-rendered content. See docs/REACT-BITS.md and the complete third-party licence.

@@ -310,6 +310,50 @@ h2 em { @apply text-leaf; }
 .gallery-grid { @apply grid items-start gap-7 md:grid-cols-2; }
 .gallery-story { @apply min-w-0 overflow-hidden rounded-lg border border-forest/20 bg-white; }
 .gallery-story .story-art { @apply rounded-none; }
+.hero-photo-visual .hero-art-frame { @apply rounded-lg; background:var(--forest); }
+.hero-photo-visual .hero-art { @apply h-auto w-full; object-position:center; }
+.hero-photo-label { @apply px-5 py-3 text-[10px] font-medium uppercase tracking-[1.5px] text-white; }
+.hero-photo-visual { @apply pb-0; }
+.hero-photo-visual figcaption { @apply static mt-3 text-left text-[11px] leading-relaxed sm:text-right; }
+.hero-photo-visual figcaption a { @apply underline underline-offset-4; }
+.student-moment-photo { @apply min-w-0; }
+.student-moment-photo > img { @apply aspect-[4/3] w-full rounded-lg object-cover; }
+.student-moment-photo figcaption { @apply mt-3 text-[11px] leading-relaxed; color:var(--muted); }
+.student-moment-photo figcaption a { @apply font-medium text-forest underline underline-offset-4; }
+.story-photo { @apply relative overflow-hidden rounded-lg; }
+.story-photo img { @apply aspect-[1.65] w-full object-cover; object-position:center 44%; }
+.story-photo-credit { @apply absolute right-3 bottom-3 rounded bg-forest px-2 py-1 text-[10px] text-white; }
+.gallery-story .story-photo { @apply rounded-none; }
+.video-photo-poster::before,.video-photo-poster::after { content:none; }
+.video-poster-photo { @apply object-cover; }
+.video-photo-shade { @apply absolute inset-0; background:linear-gradient(180deg,rgba(20,43,28,.4),rgba(20,43,28,.85)); }
+.video-photo-poster .video-poster-top,.video-photo-poster .video-laurel,.video-photo-poster .video-poster-name,.video-photo-poster .video-poster-caption,.video-photo-poster .video-play { @apply z-10; }
+.video-photo-poster .video-poster-name,.video-photo-poster .video-poster-caption { @apply relative; }
+.video-description small a { @apply underline underline-offset-2; }
+/* Image-only slideshow: originals stay uncropped, with no card or selector rail. */
+.awards-slideshow { @apply min-w-0 pb-0; }
+.slideshow-frame { @apply relative m-0 overflow-hidden rounded-lg; }
+.slideshow-image-link { @apply flex aspect-[4/3] items-center justify-center bg-white; }
+.awards-slideshow .slideshow-photo { @apply size-full object-contain; animation:school-photo-fade 600ms ease-out; }
+.slideshow-pause { @apply absolute right-3 bottom-3 flex size-11 items-center justify-center rounded-full border border-white/30 bg-forest text-white shadow-sm; }
+.slideshow-pause svg { @apply size-4; }
+@keyframes school-photo-fade { from { opacity:0.25; } to { opacity:1; } }
+@media (prefers-reduced-motion:reduce) { .awards-slideshow .slideshow-photo { animation:none; } }
+
+.school-photo-grid { @apply grid gap-8 md:grid-cols-2; }
+.school-photo-card { @apply min-w-0 overflow-hidden rounded-lg border border-forest/15; }
+.school-photo-preview { @apply block aspect-[4/3] overflow-hidden bg-lime/10; }
+.school-photo-preview img { @apply size-full object-contain; }
+.school-photo-copy { @apply p-5 sm:p-6; }
+.school-photo-copy h2 { @apply mt-3 mb-4 font-editorial text-[30px] leading-[1.15]; }
+.school-photo-copy > p { @apply mt-4 text-xs leading-[1.8]; color:var(--muted); }
+.school-photo-links { @apply flex flex-wrap gap-x-5 gap-y-2; }
+.school-photo-links a { @apply inline-flex min-h-8 items-center gap-1.5 text-[11px] underline underline-offset-4; }
+.school-photo-links svg { @apply size-3; }
+.jamb-poster-link { @apply mx-6 mb-6 block overflow-hidden rounded-md border border-forest/15; }
+.jamb-poster-link > img { @apply h-auto w-full; }
+.jamb-poster-link > span { @apply flex items-center justify-between gap-3 border-t border-forest/15 px-4 py-3 text-[11px]; }
+.jamb-poster-link svg { @apply size-3; }
 .gallery-story-copy { @apply p-6 md:p-8; }
 .gallery-story-copy h2 { @apply mt-4 mb-4 font-editorial text-[30px] font-normal leading-[1.1] tracking-[-.5px]; }
 .gallery-student { @apply text-xs font-medium; }

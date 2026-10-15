@@ -26,10 +26,15 @@ Verified directly through YouTube's live search and the organiser's channel/titl
 
 The site uses click-to-load `youtube-nocookie.com` embeds and always provides a direct YouTube link. Videos are not downloaded or rehosted. Availability, embedding restrictions, ads, and playback remain controlled by YouTube. Browser tests verify the embed URL, accessible title, explicit playback action, and fallback link; they do not assert that third-party video playback will succeed on every network/device.
 
-## 2025 JAMB results: unresolved source gap
+## 2025 JAMB results: initial source gap on 14 October 2026
 
 Targeted searches for Brainfield Schools/College, Salolo/Abule Egba, JAMB/UTME, and 2025 did not produce a trustworthy public cohort list. The founder confirmed they do not have a source URL. Results from similarly named institutions in Port Harcourt/Owerri/Aba, unrelated admissions pages, and old UTME highlights are excluded.
 
 The homepage and Gallery therefore have a dedicated **2025 JAMB / UTME** section with an honest pending-publication state. The 2022 score of 354 appears only in the dated historical gallery. No invented student names, scores, pass rates, result counts, or placeholder score tiles are used.
 
 The Gallery lists all currently verified public records in `apps/web/src/content/gallery.ts`; it does not claim to contain every student's results. A complete school-approved 2025 list is still needed to fulfil the requested student-by-student results showcase. Private academic records remain within the authorised school portal design. The source list can be extended with approved public entries later without changing page layouts.
+
+
+## Resolved for school-published highlights — 15 October 2026
+
+The founder supplied the school’s Facebook channel, 2025 individual highlight poster and full cohort-highlight posters. The public page matches the supplied school details. The homepage now shows Babalola David and Ayomide Victoria at 364, explicitly attributed to the school, and the Gallery provides full-size posters rather than guessing small student names. See [school-media provenance](SCHOOL-MEDIA.md). This supersedes the earlier pending-results state for published highlights; no claim of independently verified JAMB account access or a complete student register is made.

@@ -1,10 +1,11 @@
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowRightIcon, ArrowTopRightIcon, CheckIcon, ChevronDownIcon, GlobeIcon, HeartIcon, LightningBoltIcon, MobileIcon, ReaderIcon } from "@radix-ui/react-icons";
 import { Header } from "@/components/header";
+import { FadeContent } from "@/components/fade-content";
 import { LearningSpaces } from "@/components/learning-spaces";
 import { Footer } from "@/components/footer";
-import { AchievementArt } from "@/components/achievement-art";
+import { AchievementPhoto } from "@/components/achievement-photo";
+import { AwardsSlideshow } from "@/components/awards-slideshow";
 import { ChampionVideo } from "@/components/champion-video";
 import { Jamb2025 } from "@/components/jamb-2025";
 import { campuses, faqs, school } from "@/content/school";
@@ -25,14 +26,7 @@ export default function Home() {
             <div className="hero-actions"><a href="#admissions" className="button button-red">Discover Brainfield <ArrowTopRightIcon /></a><a href="#champions" className="hero-secondary">Meet our champions <ArrowRightIcon /></a></div>
             <div className="hero-location"><span className="location-dots"><span /><span /></span><a href="#campuses">Salolo–Alagbado</a><span className="location-separator" /><a href="#campuses">Abule Egba</a><span className="location-city">Lagos, Nigeria</span></div>
           </div>
-          <figure className="hero-visual hero-editorial-visual">
-            <div className="hero-art-frame">
-              <div className="hero-art-label"><span /> Rooted in Lagos. Looking ahead.</div>
-              <Image src="/illustrations/brainfield-campus.svg" width={640} height={650} priority alt="Conceptual illustration of students, books, and a green school building; not the actual Brainfield campus" className="hero-art" />
-            </div>
-            <div className="hero-proof-grid"><Link href="/gallery?category=achievements&year=2025" className="hero-proof hero-proof-global"><span className="proof-top">2025 / GLOBAL OPPORTUNITIES<ArrowTopRightIcon /></span><strong>Lagos → Tokyo</strong><span>Sakura Science Programme selection</span></Link><Link href="/gallery?category=achievements&year=2024" className="hero-proof hero-proof-science"><span className="proof-top">INTERSWITCHSPAK 6.0<ArrowTopRightIcon /></span><strong>Brilliance on stage.</strong><span>Celebrating a Brainfield semi-finalist</span></Link></div>
-            <figcaption>Original illustration · Campus photography to follow</figcaption>
-          </figure>
+          <AwardsSlideshow />
         </section>
 
         <section className="values-strip" aria-label="Our guiding values"><div className="page-shell values-inner"><span className="values-label">More than an education.<br /><strong>A foundation for life.</strong></span><span><ReaderIcon />Curiosity</span><span><HeartIcon />Character</span><span><GlobeIcon />Community</span><span><LightningBoltIcon />Possibility</span></div></section>
@@ -50,11 +44,11 @@ export default function Home() {
           </div>
         </div></section>
 
-        <section id="school-life" className="section-space page-shell" aria-labelledby="life-title"><div className="section-heading"><div><span className="eyebrow">Beyond the textbook</span><h2 id="life-title">Make room for<br /><em>“What if?”</em></h2></div><p>Discover the ideas behind our science and technology learning spaces. Ask the school about current facilities and arrange a visit.</p></div><LearningSpaces /></section>
+        <section id="school-life" className="section-space page-shell" aria-labelledby="life-title"><div className="section-heading"><div><span className="eyebrow">Beyond the textbook</span><h2 id="life-title">Make room for<br /><em>“What if?”</em></h2></div><p>Meet the students taking their curiosity beyond the classroom, from national science competitions to international opportunities.</p></div><FadeContent><LearningSpaces /></FadeContent></section>
 
         <section id="achievements" className="achievements-section section-space" aria-labelledby="achievements-title"><div className="page-shell">
           <div className="section-heading"><div><span className="eyebrow">The effort. The focus. The achievement.</span><h2 id="achievements-title">Bright minds.<br /><em>Bigger horizons.</em></h2></div><div className="section-heading-aside"><p>Recent publicly reported highlights, from international science opportunities to the national competition stage.</p><Link href={galleryHref("achievements")} className="text-link">Explore the achievement gallery <ArrowTopRightIcon /></Link></div></div>
-          <div className="recent-stories">{recentAchievements.map(story => <article key={story.id} className="recent-story"><Link href={`/gallery?category=achievements&year=${story.year}`} aria-label={`Explore ${story.label}`}><AchievementArt theme={story.theme} /></Link><div className="recent-story-copy"><span className="eyebrow">{story.label}</span><h3>{story.title}</h3><p><strong>{story.student}.</strong> {story.description}</p><a href={story.source} target="_blank" rel="noopener noreferrer" className="text-link">Read the {story.sourceName} report <ArrowTopRightIcon /><span className="sr-only"> (opens in a new tab)</span></a></div></article>)}</div>
+          <div className="recent-stories">{recentAchievements.map(story => <article key={story.id} className="recent-story"><Link href={`/gallery?category=achievements&year=${story.year}`} aria-label={`Explore ${story.label}`}><AchievementPhoto id={story.id} theme={story.theme} /></Link><div className="recent-story-copy"><span className="eyebrow">{story.label}</span><h3>{story.title}</h3><p><strong>{story.student}.</strong> {story.description}</p><a href={story.source} target="_blank" rel="noopener noreferrer" className="text-link">Read the {story.sourceName} report <ArrowTopRightIcon /><span className="sr-only"> (opens in a new tab)</span></a></div></article>)}</div>
           <div className="champion-ribbon"><span className="ribbon-edition">INTERSWITCHSPAK 3.0</span><div><strong>{championAchievement.student} · National champion</strong><span>Celebrating a ₦7.5 million scholarship-winning achievement.</span></div><a href="#champions" className="text-link">Watch his story <ArrowTopRightIcon /></a></div>
         </div></section>
 

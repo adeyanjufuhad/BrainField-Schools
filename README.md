@@ -4,7 +4,7 @@
 
 BrainField Schools brings the public school website, academic administration, examinations, classroom resources, and school billing into one platform with separate workspaces for the people who use it.
 
-> **Project status: landing-page implementation.** The Next.js website includes the supplied school logo, both Lagos campuses, telephone links, conceptual illustrations, and source-linked historical achievements. Neon PostgreSQL/Auth connection code is prepared but no Neon instance or school database is connected. Portals, payments, and student-data workflows remain planned. No production deployment or school endorsement is claimed.
+> **Project status: landing-page implementation.** The Next.js website includes the supplied school logo, both Lagos campuses, telephone links, verified public student-event photographs, and source-linked historical achievements. Neon PostgreSQL/Auth connection code is prepared but no Neon instance or school database is connected. Portals, payments, and student-data workflows remain planned. No production deployment or school endorsement is claimed.
 
 ## Documents
 
@@ -18,8 +18,11 @@ BrainField Schools brings the public school website, academic administration, ex
 | [Design guidance](DESIGN.md) | Green, red, and white palette, responsive layouts, accessibility, and interface states |
 | [Contributing](CONTRIBUTING.md) | Collaboration, review, and documentation workflow |
 | [Neon setup](docs/NEON-SETUP.md) | Database/Auth connection boundary, configuration, and remaining account setup |
+| [School media and 2025 results](docs/SCHOOL-MEDIA.md) | Uploaded photo provenance, original school posters, retrieval status and privacy exclusions |
+| [React Bits integration](docs/REACT-BITS.md) | Fade Content adaptation, accessibility behaviour and third-party licence |
+| [Photograph provenance](docs/PHOTO-SOURCES.md) | Public photo sources, identity checks, contextual captions, and usage scope |
 | [School content sources](docs/CONTENT-SOURCES.md) | Supplied identity/contact details, verified historical achievements, and source caveats |
-| [Landing-page and Gallery research](docs/LANDING-RESEARCH.md) | Pinterest/web inspiration, newer achievement sources, official YouTube films, and the 2025 results source gap |
+| [Landing-page and Gallery research](docs/LANDING-RESEARCH.md) | Pinterest/web inspiration, newer achievement sources, official YouTube films, and the original 2025 research history |
 
 ## 1. Purpose and boundaries
 
@@ -168,7 +171,7 @@ npm run dev
 
 Open http://127.0.0.1:3001. For production verification use `npm run lint`, `npm run typecheck`, and `npm run build`. Browser checks run with `npm run test:e2e`; install Playwright Chromium first if needed. The initial portal route clearly explains that access is not available yet.
 
-The Gallery is at `/gallery`, with category, year, and student/story search filters. It includes newer source-linked science highlights and official YouTube videos that load on request. The homepage has a dedicated 2025 JAMB area; no verified public 2025 cohort list was found, so that area remains explicitly pending. Historical 2022 scores appear only in the dated archive. Public Gallery entries are maintained in `apps/web/src/content/gallery.ts`; no private student-result database is exposed.
+The Gallery is at `/gallery`, with category, year, and student/story search filters. It includes newer source-linked science highlights and official YouTube videos that load on request. The homepage has a dedicated 2025 JAMB area; the school-published posters now provide two attributed 364/400 highlights and the public cohort posters in the photo archive. Historical 2022 scores appear only in the dated archive. Public Gallery entries are maintained in `apps/web/src/content/gallery.ts`; no private student-result database is exposed.
 
 See [Neon setup](docs/NEON-SETUP.md) for the server-only database/Auth configuration, [content sources](docs/CONTENT-SOURCES.md) for verified school facts and achievements, and [the build guide](docs/BUILD-GUIDE.md) for later phases. The public page does not require or invent a database connection. Robots indexing is disabled until school review.
 
@@ -206,3 +209,5 @@ The architecture is an original proposal; these official references support the 
 - [Playwright](https://playwright.dev/docs/intro) and [Vercel Web Interface Guidelines](https://vercel.com/design/guidelines)
 
 Built around the school's actual workflow, with a separate director dashboard and class-teacher review before final approval.
+
+Update, 15 October 2026: the hero now uses an image-only slideshow, replacing the carousel card, large caption, arrows and dots. Seventeen originals cycle every six seconds, with a small pause control. Hover/focus and background tabs suspend advancement; reduced-motion preference disables autoplay and fading. Images are uncropped, with credits and source links retained in the gallery.

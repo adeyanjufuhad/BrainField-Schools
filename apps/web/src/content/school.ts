@@ -22,18 +22,18 @@ export const navigation = [
 ];
 
 export const learningSpaces = [
-  { id: "science", label: "Science & discovery", number: "01", title: "Big questions.\nHands-on discovery.",
-    description: "A space for asking why, testing ideas, and seeing classroom concepts come to life.",
-    tags: ["Scientific thinking", "Practical learning", "Exploration"], illustration: "science" },
-  { id: "technology", label: "ICT & programming", number: "02", title: "From curious learners\nto creative builders.",
-    description: "Explore the possibilities of digital learning, from understanding computers to writing a first line of code.",
-    tags: ["Digital skills", "Creative problem-solving", "Programming"], illustration: "technology" },
+  { id: "science", label: "Science opportunities", number: "01", title: "Curiosity that\nopens new doors.",
+    description: "Brainfield’s Babalola David was selected alongside two Lagos State Senior Model College students for the 2025 Sakura Science Programme. This photograph shows the Lagos delegation at its pre-departure meeting.",
+    tags: ["2025 Sakura Science Programme", "International selection", "Lagos delegation"], photo: "sakura" },
+  { id: "competition", label: "National competitions", number: "02", title: "The focus.\nThe winning moment.",
+    description: "Jubril Dokun represented Brainfield College, Salolo, and won InterswitchSPAK 3.0. Here, he receives the competition’s ₦7.5 million scholarship prize.",
+    tags: ["InterswitchSPAK 3.0", "National champion", "STEM scholarship"], photo: "champion" },
 ] as const;
 
 export const faqs = [
   { question: "How can I find out about admissions?", answer: "Call 08032367229, 07084370636, or 08024147831 to speak with the school about current admissions, requirements, fees, and visiting either campus. Admission dates and availability should be confirmed directly." },
   { question: "Where are the two campuses?", answer: "The Salolo main campus is at 39/40 Powerline Avenue, opposite FHA Estate, Salolo–Alagbado, Lagos. The Abule Egba campus is at 32/34 Ekoro Road, Abule Egba, Lagos." },
-  { question: "Where can I see achievements and JAMB results?", answer: "Visit the Gallery to browse source-linked competition stories, published historical UTME highlights, and official InterswitchSPAK videos. The 2025 JAMB section is ready, but no verified public 2025 list is available yet. This is not a complete list of every student’s private results." },
+  { question: "Where can I see achievements and JAMB results?", answer: "Visit the Gallery to browse source-linked competition stories, published historical UTME highlights, and official InterswitchSPAK videos. The 2025 section includes Babalola David and Ayomide Victoria, both reported by the school at 364. Open School photos in the Gallery for the original 2025 and historical results posters. Private result slips are excluded." },
   { question: "Can students and teachers access the portal yet?", answer: "The school portal is the next stage of this project. Account access will be provided by the school when the portal is ready." },
-  { question: "Are these photographs of the school?", answer: "The artwork on this page is an original illustration. It does not depict the actual campus. School-approved photographs will be added later." },
+  { question: "Are these photographs of the school?", answer: "The featured photographs show Brainfield students in publicly reported science and competition events. The competition and results photographs include founder-supplied images from the school’s public Facebook page, with source credits. The Sakura group also includes students and representatives from other Lagos schools. These are event photographs, rather than photographs of our classrooms or campuses." },
 ];
