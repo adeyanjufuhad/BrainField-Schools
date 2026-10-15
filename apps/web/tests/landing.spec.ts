@@ -86,44 +86,32 @@ test("unconfigured authentication fails clearly without accepting credentials", 
   expect(response.headers()["cache-control"]).toBe("no-store");
 });
 
-test("zooming slideshow advances and supports its inset image slider", async ({ page }) => {
+test("slideshow changes every three seconds without controls and pauses on focus", async ({ page }) => {
   await page.clock.install();
   await page.goto("/");
   const slideshow = page.getByRole("region", { name: "School awards and published JAMB results" });
+  await expect(slideshow.getByRole("slider")).toHaveCount(0);
   await expect(slideshow.getByRole("button")).toHaveCount(0);
-  const slider = slideshow.getByRole("slider", { name: "Choose slideshow image" });
-  await expect(slider).toHaveValue("0");
-  await page.clock.runFor(6100);
+  await page.clock.runFor(3100);
   await expect(slideshow.getByRole("img")).toHaveAttribute("alt", /2025 UTME score of 364/);
-  await expect(slider).toHaveValue("1");
-  await slider.focus();
-  await slider.press("ArrowRight");
-  await expect(slideshow.getByRole("img")).toHaveAttribute("alt", /2025 UTME results poster, including/);
-  await page.clock.runFor(12000);
-  await expect(slider).toHaveValue("2");
-  await expect(slideshow.getByRole("img")).toHaveCSS("animation-play-state", "paused");
+  await slideshow.getByRole("link").focus();
+  await page.clock.runFor(6000);
+  await expect(slideshow.getByRole("img")).toHaveAttribute("alt", /2025 UTME score of 364/);
   await page.getByRole("heading", { level: 1 }).click();
   await page.mouse.move(0, 0);
-  await page.clock.runFor(6100);
-  await expect(slider).toHaveValue("3");
-  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await page.clock.runFor(3100);
+  await expect(slideshow.getByRole("img")).toHaveAttribute("alt", /2025 UTME results poster, including/);
 });
 
-test("reduced motion stops slideshow zoom and scroll animation while keeping slider usable", async ({ page }) => {
+test("reduced motion stops slideshow zoom and preserves gallery access", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.clock.install();
   await page.goto("/");
   const slideshow = page.getByRole("region", { name: "School awards and published JAMB results" });
-  await page.clock.runFor(18000);
+  await page.clock.runFor(9000);
   await expect(slideshow.getByRole("img")).toHaveAttribute("alt", /Jubril Dokun/);
   await expect(slideshow.getByRole("img")).toHaveCSS("animation-name", "none");
-  const slider = slideshow.getByRole("slider");
-  await slider.focus();
-  await slider.press("ArrowRight");
-  await expect(slider).toHaveValue("1");
-  await page.locator(".campus-card").first().scrollIntoViewIfNeeded();
-  await expect(page.locator(".campus-card").first()).toHaveCSS("transform", "none");
-  await expect(page.locator(".campus-card").first()).toHaveCSS("opacity", "1");
+  await expect(slideshow.getByRole("link")).toHaveAttribute("href", "/gallery?category=photos");
 });
 
 test("scroll reveals leave sections readable after entering the viewport", async ({ page }) => {

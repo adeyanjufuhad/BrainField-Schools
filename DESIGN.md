@@ -56,3 +56,5 @@ Current motion update, 15 October 2026: the hero play/pause button is removed at
 ## Public website revamp
 
 Use a forest-green split hero with a white photo inset, gentle slideshow zoom and compact slider. A linked proof strip leads to the dated 2025 results and achievement archive. Alternate white, pale green and forest sections with editorial typography, staggered achievement stories and equal campus panels. The Gallery opens with a real EKO STEM photo and uses clearly grouped category/search filters. The footer uses the original crest on forest green. The portal remains an honest availability page with planned workspace descriptions; do not imply authentication or dashboards are live. Mobile layouts collapse to one column. Preserve source links, original images, reduced-motion support and verified school information.
+
+Latest slideshow refinement: images now advance every three seconds. Remove the inset slider and counter entirely so results posters remain unobstructed. Retain the matching three-second zoom, hover/focus pause, reduced-motion support and link to the full photo Gallery. This supersedes the earlier slider and six-second timing guidance.
