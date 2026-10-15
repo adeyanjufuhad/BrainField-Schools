@@ -27,6 +27,7 @@ export function Header() {
       </div>
       {open && <nav id="mobile-navigation" className="mobile-nav page-shell" aria-label="Mobile navigation" onKeyDown={event => { if (event.key === "Escape") setOpen(false); }}>
         {navigation.map(item => <Link key={item.href} href={item.href} aria-current={item.href === pathname ? "page" : undefined} onClick={() => setOpen(false)}>{item.label}</Link>)}
+        <Link href="/portal" onClick={() => setOpen(false)}>School portal <ArrowTopRightIcon /></Link>
         <Link href="/#admissions" onClick={() => setOpen(false)}>Admissions <ArrowTopRightIcon /></Link>
       </nav>}
     </header>

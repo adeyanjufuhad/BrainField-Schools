@@ -23,12 +23,17 @@ export default function Home() {
         <section className="hero page-shell" aria-labelledby="hero-title">
           <div className="hero-copy">
             <div className="eyebrow"><span className="eyebrow-rule" />Welcome to Brainfield Schools Lagos</div>
-            <h1 id="hero-title">Bright minds.<br />Strong character.<br /><em>Endless possibilities.</em></h1>
-            <p>A love of learning. The courage to try. The determination to go further. Your child’s next chapter starts here.</p>
+            <h1 id="hero-title">Bright minds.<br /><em>Remarkable</em><br />possibilities.</h1>
+            <p>A school for curious minds and determined hearts. Discover a community of learners, thinkers and young achievers in Lagos.</p>
             <div className="hero-actions"><a href="#admissions" className="button button-red">Discover Brainfield <ArrowTopRightIcon /></a><a href="#champions" className="hero-secondary">Meet our champions <ArrowRightIcon /></a></div>
             <div className="hero-location"><span className="location-dots"><span /><span /></span><a href="#campuses">Salolo–Alagbado</a><span className="location-separator" /><a href="#campuses">Abule Egba</a><span className="location-city">Lagos, Nigeria</span></div>
           </div>
-          <AwardsSlideshow />
+          <div className="hero-media"><div className="hero-media-heading"><span>THE BRAINFIELD SPIRIT</span><span>In pictures ↗</span></div><AwardsSlideshow /><div className="hero-media-footer"><span>Real students. Remarkable moments.</span><Link href="/gallery?category=photos">Explore the gallery <ArrowTopRightIcon /></Link></div></div>
+        </section>
+
+        <section className="proof-strip page-shell" aria-label="Explore Brainfield highlights">
+          <Link href="/gallery?category=results&year=2025"><span className="proof-label">2025 UTME HIGHLIGHTS</span><strong>364<span>/400</span></strong><span>Two school-published top scores <ArrowTopRightIcon /></span></Link>
+          <Link href="/gallery?category=achievements"><span className="proof-label">BEYOND THE CLASSROOM</span><strong>National stages.<br />Global possibilities.</strong><span>Explore our students’ achievements <ArrowTopRightIcon /></span></Link>
         </section>
 
         <section className="values-strip" aria-label="Our guiding values"><div className="page-shell values-inner"><span className="values-label">More than an education.<br /><strong>A foundation for life.</strong></span><span><ReaderIcon />Curiosity</span><span><HeartIcon />Character</span><span><GlobeIcon />Community</span><span><LightningBoltIcon />Possibility</span></div></section>

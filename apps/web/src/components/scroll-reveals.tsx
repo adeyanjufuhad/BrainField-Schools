@@ -14,7 +14,7 @@ export function ScrollReveals() {
       for (const entry of entries) {
         if (!entry.isIntersecting) continue;
         observer.unobserve(entry.target);
-        context.add(() => gsap.fromTo(entry.target, { opacity: 0.3, y: 28 }, { opacity: 1, y: 0, duration: 0.75, ease: "power2.out", clearProps: "opacity,transform" }));
+        context.add(() => gsap.fromTo(entry.target, { opacity: 1, y: 28 }, { opacity: 1, y: 0, duration: 0.75, ease: "power2.out", clearProps: "opacity,transform" }));
       }
     }, { threshold: 0.08 });
     root.querySelectorAll(".section-heading, .about-section > div, .academic-grid > *, .recent-story, .champion-ribbon, .jamb-year-layout > div, .campus-card, .admissions-inner > div, .faq-section > div").forEach(element => observer.observe(element));
