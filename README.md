@@ -210,4 +210,4 @@ The architecture is an original proposal; these official references support the 
 
 Built around the school's actual workflow, with a separate director dashboard and class-teacher review before final approval.
 
-Update, 15 October 2026: the hero now uses an image-only slideshow, replacing the carousel card, large caption, arrows and dots. Seventeen originals cycle every six seconds, with a small pause control. Hover/focus and background tabs suspend advancement; reduced-motion preference disables autoplay and fading. Images are uncropped, with credits and source links retained in the gallery.
+Update, 15 October 2026: the hero now uses an image-only slideshow, replacing the carousel card, large caption, arrows and dots. Seventeen originals cycle every six seconds with gentle magnification and an inset image-position slider. Hover/focus and background tabs suspend advancement; reduced-motion preference disables autoplay and fading. Credits, source links and uncropped originals remain available in the Gallery.

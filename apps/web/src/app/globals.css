@@ -330,15 +330,20 @@ h2 em { @apply text-leaf; }
 .video-photo-poster .video-poster-top,.video-photo-poster .video-laurel,.video-photo-poster .video-poster-name,.video-photo-poster .video-poster-caption,.video-photo-poster .video-play { @apply z-10; }
 .video-photo-poster .video-poster-name,.video-photo-poster .video-poster-caption { @apply relative; }
 .video-description small a { @apply underline underline-offset-2; }
-/* Image-only slideshow: originals stay uncropped, with no card or selector rail. */
+/* Image slideshow with a gentle zoom and an inset slide-position slider. */
 .awards-slideshow { @apply min-w-0 pb-0; }
 .slideshow-frame { @apply relative m-0 overflow-hidden rounded-lg; }
-.slideshow-image-link { @apply flex aspect-[4/3] items-center justify-center bg-white; }
-.awards-slideshow .slideshow-photo { @apply size-full object-contain; animation:school-photo-fade 600ms ease-out; }
-.slideshow-pause { @apply absolute right-3 bottom-3 flex size-11 items-center justify-center rounded-full border border-white/30 bg-forest text-white shadow-sm; }
-.slideshow-pause svg { @apply size-4; }
-@keyframes school-photo-fade { from { opacity:0.25; } to { opacity:1; } }
-@media (prefers-reduced-motion:reduce) { .awards-slideshow .slideshow-photo { animation:none; } }
+.slideshow-image-link { @apply flex aspect-[4/3] items-center justify-center overflow-hidden bg-white; }
+.awards-slideshow .slideshow-photo { @apply size-full object-contain; animation:school-photo-zoom 6s linear both; transform-origin:center; }
+.slideshow-frame[data-paused="true"] .slideshow-photo { animation-play-state:paused; }
+.slideshow-navigation { @apply absolute right-3 bottom-3 left-3 flex items-center gap-3 rounded-md bg-forest/95 px-3 text-white; }
+.slideshow-position { @apply shrink-0 text-[11px] font-medium tabular-nums; }
+.slideshow-position span { @apply text-white/80; }
+.slideshow-slider { @apply m-0 h-11 min-w-0 flex-1 cursor-pointer accent-white; }
+.slideshow-slider:focus-visible { outline:2px solid white; outline-offset:-2px; }
+@keyframes school-photo-zoom { 0% { opacity:0.35; transform:scale(1); } 10% { opacity:1; } 100% { opacity:1; transform:scale(1.045); } }
+@media (prefers-reduced-motion:reduce) { .awards-slideshow .slideshow-photo { animation:none; transform:none; } }
+
 
 .school-photo-grid { @apply grid gap-8 md:grid-cols-2; }
 .school-photo-card { @apply min-w-0 overflow-hidden rounded-lg border border-forest/15; }

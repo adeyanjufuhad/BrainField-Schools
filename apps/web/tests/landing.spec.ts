@@ -86,34 +86,53 @@ test("unconfigured authentication fails clearly without accepting credentials", 
   expect(response.headers()["cache-control"]).toBe("no-store");
 });
 
-test("image slideshow advances automatically and can be paused", async ({ page }) => {
+test("zooming slideshow advances and supports its inset image slider", async ({ page }) => {
   await page.clock.install();
   await page.goto("/");
   const slideshow = page.getByRole("region", { name: "School awards and published JAMB results" });
-  await expect(slideshow.getByRole("img")).toHaveAttribute("alt", /Jubril Dokun/);
-  await expect(slideshow.getByRole("button")).toHaveCount(1);
-  await expect(slideshow.getByRole("heading")).toHaveCount(0);
+  await expect(slideshow.getByRole("button")).toHaveCount(0);
+  const slider = slideshow.getByRole("slider", { name: "Choose slideshow image" });
+  await expect(slider).toHaveValue("0");
   await page.clock.runFor(6100);
   await expect(slideshow.getByRole("img")).toHaveAttribute("alt", /2025 UTME score of 364/);
-  await slideshow.getByRole("button", { name: "Pause slideshow" }).click();
-  await page.mouse.move(0, 0);
+  await expect(slider).toHaveValue("1");
+  await slider.focus();
+  await slider.press("ArrowRight");
+  await expect(slideshow.getByRole("img")).toHaveAttribute("alt", /2025 UTME results poster, including/);
   await page.clock.runFor(12000);
-  await expect(slideshow.getByRole("img")).toHaveAttribute("alt", /2025 UTME score of 364/);
-  await slideshow.getByRole("button", { name: "Play slideshow" }).click();
+  await expect(slider).toHaveValue("2");
+  await expect(slideshow.getByRole("img")).toHaveCSS("animation-play-state", "paused");
   await page.getByRole("heading", { level: 1 }).click();
   await page.mouse.move(0, 0);
   await page.clock.runFor(6100);
-  await expect(slideshow.getByRole("img")).toHaveAttribute("alt", /2025 UTME results poster, including/);
+  await expect(slider).toHaveValue("3");
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
 
-test("image slideshow stays still for reduced motion", async ({ page }) => {
+test("reduced motion stops slideshow zoom and scroll animation while keeping slider usable", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.clock.install();
   await page.goto("/");
   const slideshow = page.getByRole("region", { name: "School awards and published JAMB results" });
   await page.clock.runFor(18000);
   await expect(slideshow.getByRole("img")).toHaveAttribute("alt", /Jubril Dokun/);
-  await expect(slideshow.getByRole("button")).toHaveCount(0);
   await expect(slideshow.getByRole("img")).toHaveCSS("animation-name", "none");
+  const slider = slideshow.getByRole("slider");
+  await slider.focus();
+  await slider.press("ArrowRight");
+  await expect(slider).toHaveValue("1");
+  await page.locator(".campus-card").first().scrollIntoViewIfNeeded();
+  await expect(page.locator(".campus-card").first()).toHaveCSS("transform", "none");
+  await expect(page.locator(".campus-card").first()).toHaveCSS("opacity", "1");
+});
+
+test("scroll reveals leave sections readable after entering the viewport", async ({ page }) => {
+  await page.goto("/");
+  for (const selector of [".academic-feature", ".recent-story", ".campus-card", ".admissions-contact"]) {
+    const section = page.locator(selector).first();
+    await section.scrollIntoViewIfNeeded();
+    await expect(section).toBeVisible();
+    await expect(section).toHaveCSS("opacity", "1");
+    await expect(section).toHaveCSS("transform", "none");
+  }
 });

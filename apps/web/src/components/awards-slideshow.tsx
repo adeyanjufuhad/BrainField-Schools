@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useSyncExternalStore } from "react";
 import Image from "next/image";
-import { PauseIcon, PlayIcon } from "@radix-ui/react-icons";
 import { schoolPhotoArchive } from "@/content/photos";
 
 const slides = schoolPhotoArchive.filter(photo => photo.carousel !== false);
@@ -15,12 +14,11 @@ const subscribeMotion = (onChange: () => void) => {
 
 export function AwardsSlideshow() {
   const [active, setActive] = useState(0);
-  const [paused, setPaused] = useState(false);
   const [hovered, setHovered] = useState(false);
   const [focused, setFocused] = useState(false);
   const interacting = hovered || focused;
   const reducedMotion = useSyncExternalStore(subscribeMotion, () => window.matchMedia(motionQuery).matches, () => true);
-  const playing = !paused && !reducedMotion;
+  const playing = !reducedMotion;
   const current = slides[active];
 
   useEffect(() => {
@@ -29,15 +27,18 @@ export function AwardsSlideshow() {
       if (document.visibilityState === "visible") setActive(index => (index + 1) % slides.length);
     }, 6000);
     return () => window.clearInterval(timer);
-  }, [playing, interacting]);
+  }, [playing, interacting, active]);
 
   return <section className="awards-slideshow hero-visual" aria-label="School awards and published JAMB results" onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} onFocusCapture={() => setFocused(true)} onBlurCapture={event => { if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false); }}>
-    <figure className="slideshow-frame">
+    <figure className="slideshow-frame" data-paused={interacting ? "true" : undefined}>
       <a href="/gallery?category=photos" className="slideshow-image-link" aria-label="Explore the school photo gallery">
         <Image key={current.id} className="hero-art slideshow-photo" src={current.src} width={current.width} height={current.height} alt={current.alt} preload={active === 0} unoptimized={current.poster} sizes="(max-width: 1023px) 100vw, 50vw" />
       </a>
       <figcaption className="sr-only">{current.year} · {current.caption}. Photo: {current.credit}. Sources and full-size photographs are available in the gallery.</figcaption>
-      {!reducedMotion && <button type="button" className="slideshow-pause" aria-label={paused ? "Play slideshow" : "Pause slideshow"} onClick={() => setPaused(value => !value)}>{paused ? <PlayIcon aria-hidden="true" /> : <PauseIcon aria-hidden="true" />}</button>}
+      <div className="slideshow-navigation">
+        <span className="slideshow-position" aria-hidden="true">{String(active + 1).padStart(2, "0")} <span>/ {slides.length}</span></span>
+        <input className="slideshow-slider" type="range" min={0} max={slides.length - 1} value={active} aria-label="Choose slideshow image" aria-valuetext={`Image ${active + 1} of ${slides.length}: ${current.caption}`} onChange={event => setActive(Number(event.target.value))} />
+      </div>
     </figure>
   </section>;
 }

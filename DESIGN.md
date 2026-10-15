@@ -43,10 +43,12 @@ The homepage highlights recent science stories and school-published 2025 UTME hi
 
 ## School photographs and slideshow
 
-The hero uses a simple image-only slideshow of 17 real competition photos and results posters. Images change every six seconds and remain uncropped. There is no carousel card, large caption, arrow control or dot selector. A small 44px pause button allows visitors to stop autoplay. Hover/focus and background tabs suspend advancement. Reduced-motion preference disables autoplay and fading.
+The hero uses a simple image-only slideshow of 17 real competition photos and results posters. Images change every six seconds with gentle 4.5% magnification. Full originals remain available in the Gallery. There is no carousel card, large caption, arrow control or dot selector. A compact inset range slider and image counter identify the slideshow and allow direct image selection; no play/pause button is shown. Hover/focus and background tabs suspend advancement. Reduced-motion preference disables autoplay, magnification and fading; manual slider selection remains available.
 
 The School photos Gallery contains 18 selected source-linked originals, with year/search filters, credits and full-size links. The dated admissions/awards flyer is available only in the archive. Preserve descriptive alt text and accurate mixed-school delegation captions. Never substitute an older champion photo for a different student. Current classroom and campus photographs remain pending.
 
 The 2025 results section shows school-reported 364/400 highlights for Babalola David and Ayomide Victoria. Public results posters provide the source; no full JAMB slips or private identifiers are exported. Provenance is documented in docs/SCHOOL-MEDIA.md.
 
 React Bits FadeContent provides a restrained, once-only reveal on photo/story sections, respecting reduced motion and preserving readable server-rendered content. See docs/REACT-BITS.md and the complete third-party licence.
+
+Current motion update, 15 October 2026: the hero play/pause button is removed at the founder’s request. A compact inset range slider and image counter identify the slideshow and allow direct selection. Images slowly magnify by 4.5% over six seconds; hover/focus pauses advancement and magnification. Source originals remain accessible in the Gallery. Homepage headings, academic blocks, achievement stories, result panels, campus cards, admissions and FAQ content reveal once with a 28px rise and fade. Reduced-motion preference disables autoplay, magnification and reveals while preserving manual image selection.

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRightIcon, ArrowTopRightIcon, CheckIcon, ChevronDownIcon, GlobeIcon, HeartIcon, LightningBoltIcon, MobileIcon, ReaderIcon } from "@radix-ui/react-icons";
+import { ScrollReveals } from "@/components/scroll-reveals";
 import { Header } from "@/components/header";
 import { FadeContent } from "@/components/fade-content";
 import { LearningSpaces } from "@/components/learning-spaces";
@@ -18,6 +19,7 @@ export default function Home() {
       <div className="utility-bar"><div className="page-shell utility-inner"><span>Determination and Focus.</span><a href="#campuses">Two campuses. One Brainfield. <ArrowTopRightIcon /></a></div></div>
       <Header />
       <main id="main-content">
+        <ScrollReveals />
         <section className="hero page-shell" aria-labelledby="hero-title">
           <div className="hero-copy">
             <div className="eyebrow"><span className="eyebrow-rule" />Welcome to Brainfield Schools Lagos</div>
