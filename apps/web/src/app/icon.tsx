@@ -1,9 +1,23 @@
+import { readFile } from "node:fs/promises";
+import path from "node:path";
 import { ImageResponse } from "next/og";
 
-export const size = { width: 32, height: 32 };
+export const size = { width: 64, height: 64 };
 export const contentType = "image/png";
+export const dynamic = "force-static";
 
-/** Interim favicon; the supplied detailed school crest remains in the page header. */
-export default function Icon() {
-  return new ImageResponse(<div style={{ width:"100%", height:"100%", display:"flex", alignItems:"center", justifyContent:"center", background:"#386641", color:"#ffffff", fontSize:22, fontWeight:700, borderRadius:6 }}>B</div>, size);
+export default async function Icon() {
+  const logo = await readFile(path.join(process.cwd(), "public/brand/brainfield-logo.jpg"));
+  return new ImageResponse(
+    // Render the original crest inside a circle with transparent outer corners.
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={`data:image/jpeg;base64,${logo.toString("base64")}`}
+      alt=""
+      width={64}
+      height={64}
+      style={{ borderRadius: "50%", objectFit: "contain" }}
+    />,
+    size,
+  );
 }
