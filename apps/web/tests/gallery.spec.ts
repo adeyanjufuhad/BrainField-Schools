@@ -21,7 +21,7 @@ test("year and search filters persist in the URL and survive refresh", async ({ 
   await page.getByRole("button", { name: "Apply filters" }).click();
   await expect(page).toHaveURL(/year=2025/);
   await expect(page.locator(".gallery-grid > article")).toHaveCount(1);
-  await expect(page.locator(".gallery-grid")).toContainText("Sakura");
+  await expect(page.locator(".gallery-collection .gallery-grid")).toContainText("Sakura");
   await page.reload();
   await expect(page.getByLabel("Year", { exact: true })).toHaveValue("2025");
   await page.getByLabel("Year", { exact: true }).selectOption("all");
@@ -29,7 +29,7 @@ test("year and search filters persist in the URL and survive refresh", async ({ 
   await page.getByRole("button", { name: "Apply filters" }).click();
   await expect(page).toHaveURL(/q=Seidu/);
   await expect(page.locator(".gallery-grid > article")).toHaveCount(2);
-  await expect(page.locator(".gallery-grid")).not.toContainText("Jubril");
+  await expect(page.locator(".gallery-collection .gallery-grid")).not.toContainText("Jubril");
 });
 
 test("2025 JAMB highlights use the school posters and keep historical results separate", async ({ page }) => {

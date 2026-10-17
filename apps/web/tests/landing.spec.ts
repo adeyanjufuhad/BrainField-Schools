@@ -32,22 +32,29 @@ test("school identity, campuses, contact links, and sourced historical achieveme
   expect(errors).toEqual([]);
 });
 
-test("student-moment tabs support keyboard selection and show sourced event photographs", async ({ page }) => {
+test("student moments show sourced competition photographs without repeating the achievement stories", async ({ page }) => {
   await page.goto("/");
-  const science = page.getByRole("tab", { name: /Science opportunities/ });
-  await science.focus();
-  await page.keyboard.press("ArrowRight");
-  await expect(page.getByRole("tab", { name: /National competitions/ })).toBeFocused();
-  await expect(page.getByRole("tabpanel")).toContainText("winning moment");
-  await expect(page.getByRole("tabpanel").getByRole("img", { name: /Jubril Dokun/ })).toHaveAttribute("alt", /Jubril Dokun/);
-  await page.keyboard.press("Home");
-  await expect(science).toHaveAttribute("aria-selected", "true");
-  await expect(page.getByRole("tabpanel")).toContainText("opens new doors");
-  const delegationPhoto = page.getByRole("tabpanel").getByRole("img", { name: /Lagos Sakura Science Programme delegation/ });
-  await expect(delegationPhoto).toHaveAttribute("alt", /Lagos Sakura Science Programme delegation/);
-  await expect(delegationPhoto).toHaveJSProperty("complete", true);
-  expect(await delegationPhoto.evaluate((image: HTMLImageElement) => image.naturalWidth)).toBeGreaterThan(0);
-  await expect(page.getByRole("tabpanel")).toContainText("Photo: Edugist");
+  const moments = page.locator("#school-life .moment-tile");
+  await expect(moments).toHaveCount(5);
+  for (const image of await moments.locator("img").all()) {
+    await image.scrollIntoViewIfNeeded();
+    await expect(image).toHaveJSProperty("complete", true);
+    expect(await image.evaluate((element: HTMLImageElement) => element.naturalWidth)).toBeGreaterThan(0);
+  }
+  await expect(page.locator("#school-life")).toContainText("Some group photographs include students from other schools");
+  await expect(page.locator("#school-life img[alt*='Sakura']")).toHaveCount(0);
+  await page.locator("#school-life").getByRole("link", { name: /See all \d+ photos in the Gallery/ }).click();
+  await expect(page).toHaveURL(/\/gallery\?category=photos$/);
+});
+
+test("hero highlights and 2025 results show the published subject scores", async ({ page }) => {
+  await page.goto("/");
+  const facts = page.getByRole("list", { name: "Brainfield at a glance" });
+  await expect(facts.getByRole("link")).toHaveCount(3);
+  await expect(facts).toContainText("364/400");
+  await expect(page.locator("#jamb-2025 .jamb-subjects").first()).toContainText("Mathematics");
+  await expect(page.locator("#jamb-2025 .jamb-subjects").first()).toContainText("98");
+  await expect(page.locator("#jamb-2025 .jamb-subjects").last()).toContainText("75");
 });
 
 test("FAQ disclosure and honest portal availability", async ({ page }) => {
@@ -74,7 +81,6 @@ test("mobile navigation expands and closes after selecting a section", async ({ 
 
 test("landing page passes automated WCAG A/AA checks", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("tab", { name: /National competitions/ }).click();
   const result = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
   expect(result.violations).toEqual([]);
 });

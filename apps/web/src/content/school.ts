@@ -9,6 +9,9 @@ export const school = {
   preview: true,
 };
 
+export const phoneHref = (phone: string) => `tel:+234${phone.slice(1)}`;
+export const formatPhone = (phone: string) => `${phone.slice(0, 4)} ${phone.slice(4, 7)} ${phone.slice(7)}`;
+
 export const campuses = [
   { name: "Salolo", label: "Main campus", address: "39/40 Powerline Avenue, opposite FHA Estate, Salolo–Alagbado, Lagos" },
   { name: "Abule Egba", label: "Ekoro Road campus", address: "32/34 Ekoro Road, Abule Egba, Lagos" },
@@ -18,17 +21,10 @@ export const navigation = [
   { label: "Our school", href: "/#our-school" },
   { label: "Academics", href: "/#academics" },
   { label: "School life", href: "/#school-life" },
+  { label: "Achievements", href: "/#achievements" },
+  { label: "Campuses", href: "/#campuses" },
   { label: "Gallery", href: "/gallery" },
 ];
-
-export const learningSpaces = [
-  { id: "science", label: "Science opportunities", number: "01", title: "Curiosity that\nopens new doors.",
-    description: "Brainfield’s Babalola David was selected alongside two Lagos State Senior Model College students for the 2025 Sakura Science Programme. This photograph shows the Lagos delegation at its pre-departure meeting.",
-    tags: ["2025 Sakura Science Programme", "International selection", "Lagos delegation"], photo: "sakura" },
-  { id: "competition", label: "National competitions", number: "02", title: "The focus.\nThe winning moment.",
-    description: "Jubril Dokun represented Brainfield College, Salolo, and won InterswitchSPAK 3.0. Here, he receives the competition’s ₦7.5 million scholarship prize.",
-    tags: ["InterswitchSPAK 3.0", "National champion", "STEM scholarship"], photo: "champion" },
-] as const;
 
 export const faqs = [
   { question: "How can I find out about admissions?", answer: "Call 08032367229, 07084370636, or 08024147831 to speak with the school about current admissions, requirements, fees, and visiting either campus. Admission dates and availability should be confirmed directly." },

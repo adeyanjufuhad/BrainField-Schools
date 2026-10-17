@@ -34,8 +34,8 @@ export function AwardsSlideshow() {
       <a href="/gallery?category=photos" className="slideshow-image-link" aria-label="Explore the school photo gallery">
         <Image key={current.id} className="hero-art slideshow-photo" src={current.src} width={current.width} height={current.height} alt={current.alt} preload={active === 0} unoptimized={current.poster} sizes="(max-width: 1023px) 100vw, 50vw" />
       </a>
-      <figcaption className="sr-only">{current.year} · {current.caption}. Photo: {current.credit}. Sources and full-size photographs are available in the gallery.</figcaption>
-
+      {playing && <span key={`${current.id}-${interacting}`} className="slideshow-progress" aria-hidden="true" />}
+      <figcaption><span>{current.year} · {current.caption}</span><span>Photo: {current.credit}</span></figcaption>
     </figure>
   </section>;
 }

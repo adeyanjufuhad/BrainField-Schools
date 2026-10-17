@@ -5,6 +5,7 @@ import { ArrowLeftIcon, ArrowTopRightIcon, ReaderIcon } from "@radix-ui/react-ic
 import { SchoolPhotoGallery } from "@/components/school-photo-gallery";
 import { filterSchoolPhotos } from "@/content/photos";
 import { Header } from "@/components/header";
+import { UtilityBar } from "@/components/utility-bar";
 import { Footer } from "@/components/footer";
 import { AchievementPhoto } from "@/components/achievement-photo";
 import { ChampionVideo } from "@/components/champion-video";
@@ -38,7 +39,7 @@ export default async function Gallery({ searchParams }: { searchParams: Promise<
   const waitingFor2025 = resultsOnly && year === "2025" && !query;
   return <>
     <a href="#main-content" className="skip-link">Skip to content</a>
-    <div className="utility-bar"><div className="page-shell utility-inner"><span>Determination and Focus.</span><Link href="/#campuses">Two campuses. One Brainfield. <ArrowTopRightIcon /></Link></div></div>
+    <UtilityBar />
     <Header />
     <main id="main-content">
       <section className="gallery-intro page-shell" aria-labelledby="gallery-title"><div><Link href="/" className="gallery-back"><ArrowLeftIcon />Back to our school</Link><span className="eyebrow">The Brainfield gallery</span><h1 id="gallery-title">Determination.<br /><em>On display.</em></h1><p>Competition photographs, school-published JAMB highlights, and the moments our champions took the stage.</p></div><Link href="/gallery?category=photos" className="gallery-cover"><Image src="/photos/eko-stem-group.jpg" width={1280} height={960} alt="Students and event guests at the EKO STEM competition" sizes="(max-width: 767px) 100vw, 45vw" /><span><span>THE SCHOOL PHOTO ARCHIVE</span>Every moment tells a story. <ArrowTopRightIcon /></span></Link></section>
