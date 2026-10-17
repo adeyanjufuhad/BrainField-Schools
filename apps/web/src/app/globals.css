@@ -84,6 +84,11 @@ h1 em,h2 em { color:var(--leaf); }
 .mobile-nav { display:flex; flex-direction:column; padding-bottom:16px; border-top:1px solid var(--border); }
 .mobile-nav a { display:flex; min-height:52px; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border); font-size:16px; font-weight:500; }
 
+/* React Bits Dot Grid background on forest panels */
+.dot-background { position:absolute; inset:0; z-index:0; pointer-events:none; }
+.hero,.admissions-section { position:relative; isolation:isolate; overflow:hidden; }
+.hero > :not(.dot-background),.admissions-inner { position:relative; z-index:1; }
+
 /* Hero */
 .hero { display:grid; gap:40px; width:calc(100% - 48px); max-width:1392px; margin:24px auto 0; padding:56px 48px 48px; border-radius:var(--radius-xl); background:var(--forest); color:white; align-items:center; }
 .hero .eyebrow { color:white; }
@@ -267,7 +272,8 @@ h1 em,h2 em { color:var(--leaf); }
 
 /* Campuses */
 .campus-grid { display:grid; gap:24px; }
-.campus-card { display:flex; flex-direction:column; padding:36px; border-top:4px solid var(--leaf); border-radius:var(--radius-lg); background:var(--pale); transition:transform .25s ease, box-shadow .25s ease; }
+.campus-card { display:flex; padding:36px; border-top:4px solid var(--leaf); border-radius:var(--radius-lg); --spotlight-card-surface:var(--pale); --spotlight-card-shadow:none; --spotlight-card-border:transparent; transition:transform .25s ease, box-shadow .25s ease !important; }
+.campus-card > article { display:flex; width:100%; flex-direction:column; }
 .campus-card:hover { transform:translateY(-4px); box-shadow:var(--shadow-soft); }
 .campus-top { display:flex; align-items:center; gap:12px; }
 .campus-index { font-size:13px; font-weight:500; color:var(--forest); }
@@ -286,7 +292,7 @@ h1 em,h2 em { color:var(--leaf); }
 .admissions-section .eyebrow { color:white; }
 .admissions-section h2 em { color:var(--lime); }
 .admissions-section p { max-width:400px; margin:20px 0 28px; color:var(--on-forest); font-size:16px; line-height:1.75; }
-.admissions-contact { display:flex; flex-direction:column; justify-content:center; padding:28px; border:1px solid rgb(255 255 255 / .2); border-radius:var(--radius-lg); background:rgb(255 255 255 / .05); }
+.admissions-contact { display:flex; flex-direction:column; justify-content:center; padding:28px; border-radius:var(--radius-lg); --spotlight-card-surface:rgb(43 81 51 / .72); --spotlight-card-border:rgb(255 255 255 / .22); --spotlight-card-shadow:none; backdrop-filter:blur(2px); }
 .contact-label { margin-bottom:8px; font-size:12px; font-weight:500; letter-spacing:.16em; text-transform:uppercase; }
 .admissions-contact > a { display:flex; min-height:60px; align-items:center; gap:12px; border-bottom:1px solid rgb(255 255 255 / .2); font-size:20px; letter-spacing:.02em; font-variant-numeric:tabular-nums; transition:color .2s ease; }
 .admissions-contact > a:hover { color:var(--lime); }
