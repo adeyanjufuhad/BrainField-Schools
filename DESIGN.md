@@ -58,3 +58,12 @@ Current motion update, 15 October 2026: the hero play/pause button is removed at
 Use a forest-green split hero with a white photo inset, gentle slideshow zoom and compact slider. A linked proof strip leads to the dated 2025 results and achievement archive. Alternate white, pale green and forest sections with editorial typography, staggered achievement stories and equal campus panels. The Gallery opens with a real EKO STEM photo and uses clearly grouped category/search filters. The footer uses the original crest on forest green. The portal remains an honest availability page with planned workspace descriptions; do not imply authentication or dashboards are live. Mobile layouts collapse to one column. Preserve source links, original images, reduced-motion support and verified school information.
 
 Latest slideshow refinement: images now advance every three seconds. Remove the inset slider and counter entirely so results posters remain unobstructed. Retain the matching three-second zoom, hover/focus pause, reduced-motion support and link to the full photo Gallery. This supersedes the earlier slider and six-second timing guidance.
+
+## Landing page refinement (17 October 2026)
+
+- One consolidated stylesheet replaces the earlier base-plus-override layers. Minimum text size is 12px; body copy is 15–17px. Small text uses forest or muted green, never leaf/lime, to keep 4.5:1 contrast.
+- The hero merges the old proof strip into three linked facts (364/400 2025 UTME, ₦7.5m InterswitchSPAK 3.0 prize, two campuses). The generic values strip is removed; the motto appears in a crest card in "Our school".
+- The slideshow keeps its unobstructed image, three-second timing, zoom and hover/focus pause. A small caption and photo credit sit below the image, with a thin progress line; both are hidden or static under reduced motion.
+- "School life" is a five-photo competition mosaic (EKO STEM and BOAB) instead of tabs that repeated the Sakura and Interswitch stories shown in Achievements. Its note states that some group photos include students from other schools.
+- The 2025 JAMB board shows each school-published subject score as a labelled bar beside the 364/400 total.
+- The FAQ has a call card, the footer lists both campuses and all three phone numbers, and the utility bar links to the main phone number.
