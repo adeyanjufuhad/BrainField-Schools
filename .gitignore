@@ -22,3 +22,6 @@ __pycache__/
 .DS_Store
 Thumbs.db
 *.tsbuildinfo
+
+# Local development accounts (generated passwords)
+*.local.json
