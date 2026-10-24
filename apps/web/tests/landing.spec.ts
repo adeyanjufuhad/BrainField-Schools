@@ -57,14 +57,21 @@ test("hero highlights and 2025 results show the published subject scores", async
   await expect(page.locator("#jamb-2025 .jamb-subjects").last()).toContainText("75");
 });
 
-test("FAQ disclosure and honest portal availability", async ({ page }) => {
+test("FAQ disclosure and honest portal entry", async ({ page, request }) => {
+  const authConfigured = (await request.get("/api/auth/get-session")).status() !== 503;
   await page.goto("/");
   await page.getByText("How can I find out about admissions?", { exact: true }).click();
   await expect(page.locator("details[open]")).toContainText("08032367229");
   await page.getByRole("link", { name: "School portal", exact: true }).first().click();
   await expect(page).toHaveURL(/\/portal$/);
-  await expect(page.getByText("Portal access is not available yet.")).toBeVisible();
-  await page.getByRole("link", { name: "Back to the school website" }).click();
+  if (authConfigured) {
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Sign in");
+    await expect(page.getByText("Accounts are created by the school.")).toBeVisible();
+    await page.getByRole("link", { name: "Back to the school website" }).click();
+  } else {
+    await expect(page.getByText("Portal access is not available yet.")).toBeVisible();
+    await page.getByRole("link", { name: "Back to the school website" }).click();
+  }
   await expect(page.getByRole("heading", { level: 1 })).toContainText("Bright minds.");
 });
 
@@ -85,11 +92,15 @@ test("landing page passes automated WCAG A/AA checks", async ({ page }) => {
   expect(result.violations).toEqual([]);
 });
 
-test("unconfigured authentication fails clearly without accepting credentials", async ({ request }) => {
-  const response = await request.get("/api/auth/get-session");
-  expect(response.status()).toBe(503);
-  expect(await response.json()).toEqual({ error: "School authentication is not configured yet." });
-  expect(response.headers()["cache-control"]).toBe("no-store");
+test("authentication proxy fails clearly when unconfigured and never allows self sign-up", async ({ request }) => {
+  const session = await request.get("/api/auth/get-session");
+  if (session.status() === 503) {
+    expect(await session.json()).toEqual({ error: "School authentication is not configured yet." });
+    expect(session.headers()["cache-control"]).toBe("no-store");
+    return;
+  }
+  const signUp = await request.post("/api/auth/sign-up/email", { data: { email: "self-signup@example.com", password: "a-long-test-password", name: "Self sign-up" } });
+  expect(signUp.status()).toBe(403);
 });
 
 test("slideshow changes every three seconds without controls and pauses on focus", async ({ page }) => {
