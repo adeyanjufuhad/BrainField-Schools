@@ -1,6 +1,8 @@
 # Neon PostgreSQL and Neon Auth
 
-Updated 14 October 2026. Neon is the founder-selected database and authentication provider. The earlier managed database/auth proposal is superseded. No Neon project, database schema, production account, or Auth instance has been provisioned by this commit.
+Updated 24 October 2026. Neon is the founder-selected database and authentication provider. A development project, `brainfield-schools` (AWS London), now runs the first portal slice with Neon Auth on its `development` branch and synthetic data only. No production project or real data exists. See [the portal guide](PORTAL.md) for what is implemented, how access is enforced, and the local commands.
+
+The section below records the original 14 October setup; [PORTAL.md](PORTAL.md) supersedes its "not yet provisioned" statements.
 
 ## What is implemented
 

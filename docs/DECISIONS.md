@@ -59,3 +59,15 @@ Updated 14 October 2026. Confirmed means stated by the founders in the planning 
 | Final price and milestone scope? | Founders / school | Estimate after discovery; separate development and recurring costs |
 
 Record each resolution with date, approver, rationale, and affected documents. Revisit estimates when scope changes.
+
+## Implementation defaults, 24 October 2026
+
+These defaults apply to the development portal slice until the school decides otherwise. See [PORTAL.md](PORTAL.md).
+
+| Item | Default used | Owner to confirm |
+| --- | --- | --- |
+| Reviewer for a class teacher's own subject sheet | VP Administration | VP Admin |
+| Publisher | Separate `publisher` grant (demo principal) | Principal / VP Admin |
+| Director access | Published statistics; pending stages as counts only | Director / principal |
+| Grading | Labelled example policy: CA 40 + exam 60, pass 40, A–F bands; no rankings | Academic leadership |
+| Account linking | Provisioning sets the Auth user ID; no email matching | School administration / ICT lead |

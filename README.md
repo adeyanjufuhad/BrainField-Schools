@@ -169,7 +169,7 @@ npm ci --prefix apps/web
 npm run dev
 ```
 
-Open http://127.0.0.1:3001. For production verification use `npm run lint`, `npm run typecheck`, and `npm run build`. Browser checks run with `npm run test:e2e`; install Playwright Chromium first if needed. The initial portal route clearly explains that access is not available yet.
+Open http://localhost:3001. For production verification use `npm run lint`, `npm run typecheck`, and `npm run build`. Browser checks run with `npm run test:e2e`; install Playwright Chromium first if needed. Without Neon settings, the portal route explains that access is not available yet. With the development database configured, `/portal` runs the results workflow: see [docs/PORTAL.md](docs/PORTAL.md) for setup, the synthetic demo accounts and how access is enforced.
 
 The Gallery is at `/gallery`, with category, year, and student/story search filters. It includes newer source-linked science highlights and official YouTube videos that load on request. The homepage has a dedicated 2025 JAMB area; the school-published posters now provide two attributed 364/400 highlights and the public cohort posters in the photo archive. Historical 2022 scores appear only in the dated archive. Public Gallery entries are maintained in `apps/web/src/content/gallery.ts`; no private student-result database is exposed.
 
