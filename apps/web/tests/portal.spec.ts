@@ -169,6 +169,13 @@ test("publishing freezes report cards for students and feeds the director dashbo
   await expect(card).toContainText("Demo Student 002");
   await expect(card.getByRole("row", { name: /Mathematics/ })).toContainText("26");
   await expect(card.getByRole("row", { name: /Mathematics/ })).toContainText("55");
+  await expect(card.getByRole("row", { name: /Mathematics/ })).toContainText("73.5"); // class average, highest and lowest come from the same published batch
+  await expect(card.getByRole("row", { name: /Mathematics/ })).toContainText("83");
+  await expect(card.getByText("No. of students in class")).toBeVisible();
+  await expect(card.getByText("Position in entire class").locator("..")).toContainText("—"); // positions stay withheld until a tie policy is agreed
+  await expect(card.getByRole("columnheader", { name: "Remark" })).toBeVisible();
+  await expect(card.getByRole("table", { name: "Grade key" })).toContainText("Excellent");
+  await expect(card.getByRole("img", { name: "Brainfield Schools Lagos crest" })).toBeVisible();
   await expect(card).not.toContainText("Demo Student 001");
 
   await director.reload();

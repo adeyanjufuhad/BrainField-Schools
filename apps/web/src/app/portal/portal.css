@@ -181,3 +181,64 @@
 .credentials dd { margin:2px 0 0; font-size:17px; font-weight:500; word-break:break-all; }
 .credential-password { font-family:ui-monospace, "Cascadia Mono", Consolas, monospace; letter-spacing:.05em; }
 .credentials p { margin:0 0 12px; font-size:14px; }
+
+/* Report card (follows the school's printed format) */
+.visually-hidden { position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0; }
+.rc-masthead { display:flex; align-items:center; gap:16px; margin-bottom:12px; }
+.rc-crest { width:84px; height:84px; flex:none; border-radius:50%; object-fit:cover; }
+.rc-school { flex:1; min-width:0; }
+.rc-school p { margin:2px 0 0; color:var(--muted); font-size:13px; line-height:1.4; }
+.rc-school .rc-school-name { margin:0; color:var(--forest); font-family:var(--font-editorial); font-size:clamp(28px,4vw,40px); font-weight:700; letter-spacing:.02em; text-transform:uppercase; line-height:1.1; }
+.report-card h2.rc-title { margin:0 0 12px; padding-bottom:8px; border-bottom:3px solid var(--forest); font-family:var(--font-sans); font-size:18px; font-weight:700; text-transform:uppercase; letter-spacing:.02em; }
+.rc-title span { font-weight:500; text-transform:none; color:var(--muted); }
+.rc-info { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); border:1px solid var(--forest); border-radius:var(--radius-sm); margin-bottom:12px; overflow:hidden; }
+.rc-info dl { margin:0; padding:10px 12px; border:1px solid var(--border); }
+.rc-info dl > div { display:flex; flex-wrap:wrap; justify-content:space-between; gap:0 12px; padding:2px 0; font-size:14px; }
+.rc-info dt { color:var(--muted); }
+.rc-info dd { margin:0; font-weight:600; text-align:right; }
+.rc-info .rc-verdict { display:flex; align-items:center; background:var(--pale); }
+.rc-info .rc-verdict > div { display:block; width:100%; text-align:center; }
+.rc-info .rc-verdict dd { margin-top:4px; color:var(--forest); font-family:var(--font-editorial); font-size:30px; font-weight:600; text-align:center; }
+@media (min-width:900px) { .rc-info { grid-template-columns:repeat(3,minmax(0,1fr)); } }
+.rc-table { width:100%; border-collapse:collapse; font-size:14px; }
+.rc-table caption { text-align:left; }
+.rc-table th,.rc-table td { padding:6px 8px; border:1px solid var(--border); text-align:left; vertical-align:middle; }
+.rc-table thead th { background:var(--forest); color:var(--white); font-size:12px; font-weight:700; letter-spacing:.03em; text-transform:uppercase; border-color:var(--forest); }
+.rc-table tbody th { font-weight:600; }
+.rc-table tbody tr:nth-child(even) > * { background:var(--pale); }
+.rc-subjects td { text-align:center; font-variant-numeric:tabular-nums; }
+.rc-subjects thead th:not(:first-child) { text-align:center; }
+.rc-subjects th[scope="row"] { min-width:150px; }
+.rc-subjects .rc-grade { font-weight:700; }
+.rc-subjects .rc-remark { text-align:left; font-weight:600; }
+.rc-subjects .rc-remark-fail { color:var(--red-deep); }
+.rc-subjects .attendance-text { text-align:left; }
+.rc-lower { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:12px; margin:12px 0; align-items:start; }
+.rc-stack { display:grid; gap:12px; }
+.rc-ratings td { min-width:64px; height:30px; }
+.rc-remarks { margin-top:4px; }
+.rc-remarks th { width:30%; background:var(--pale); }
+.rc-remarks td { height:36px; }
+@media (max-width:700px) {
+  .rc-masthead { flex-wrap:wrap; }
+  .rc-masthead > button { order:3; flex:1 0 100%; justify-content:center; }
+  .rc-crest { width:64px; height:64px; }
+  .rc-school .rc-school-name { font-size:26px; }
+}
+@media print {
+  @page { size:A4; margin:10mm; }
+  .report-card { font-size:11px; }
+  .rc-masthead .no-print { display:none; }
+  .rc-crest { width:64px; height:64px; }
+  .rc-table { font-size:10.5px; }
+  .rc-table th,.rc-table td { padding:3px 5px; }
+  .rc-ratings th,.rc-ratings td { height:21px; padding-top:1px; padding-bottom:1px; }
+  .rc-remarks td { height:26px; }
+  .rc-lower { margin:8px 0; }
+  .report-card footer { margin-top:6px; font-size:9.5px; }
+  .rc-info { grid-template-columns:repeat(3,1fr); }
+  .rc-info dl > div { font-size:10.5px; }
+  .rc-lower { grid-template-columns:repeat(3,1fr); }
+  .rc-table thead th { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  .rc-table tbody tr:nth-child(even) > *,.rc-remarks th { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+}

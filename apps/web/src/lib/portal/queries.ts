@@ -179,12 +179,16 @@ export async function classDetail(actor: Actor, classId: string) {
   };
 }
 
-export async function studentReports(actor: Actor) {
+export async function studentReports(actor: Actor): Promise<PublishedReport[]> {
   const sql = getDatabase();
   const rows = await sql`
-    select id, revision, snapshot, published_at from app.published_reports
-    where student_id = ${actor.profileId} and superseded_at is null order by published_at desc`;
-  return rows.map(row => ({ id: String(row.id), revision: Number(row.revision), publishedAt: new Date(row.published_at), snapshot: row.snapshot as ReportSnapshot }));
+    select r.id, r.revision, r.snapshot, r.published_at, r.batch_id, g.bands
+    from app.published_reports r join app.grading_policies g on g.id = r.grading_policy_id
+    where r.student_id = ${actor.profileId} and r.superseded_at is null order by r.published_at desc`;
+  return Promise.all(rows.map(async row => ({
+    id: String(row.id), revision: Number(row.revision), publishedAt: new Date(row.published_at), snapshot: row.snapshot as ReportSnapshot,
+    bands: row.bands as Policy["bands"], classStatistics: await classStatistics(String(row.batch_id)),
+  })));
 }
 
 export type ReportSnapshot = {
@@ -193,6 +197,32 @@ export type ReportSnapshot = {
   subjects: { subject: string; ca: number | null; exam: number | null; attendance: string; total: number | null; grade: string | null; passed: boolean | null }[];
   totalScore: number | null; average: number | null; gradedSubjects: number;
 };
+
+/** Class-wide figures printed on every report card. Aggregates only, taken from the same published batch. */
+export type ClassStatistics = {
+  students: number; average: number | null; highest: number | null; lowest: number | null;
+  subjects: Record<string, { average: number; highest: number; lowest: number }>;
+};
+
+export type PublishedReport = { id: string; revision: number; publishedAt: Date; snapshot: ReportSnapshot; bands: Policy["bands"]; classStatistics: ClassStatistics };
+
+const figure = (value: unknown) => value === null || value === undefined ? null : Math.round(Number(value) * 100) / 100;
+
+async function classStatistics(batchId: string): Promise<ClassStatistics> {
+  const sql = getDatabase();
+  const [overall] = await sql`
+    select count(*)::int as students, avg((snapshot ->> 'average')::numeric) as average,
+      max((snapshot ->> 'average')::numeric) as highest, min((snapshot ->> 'average')::numeric) as lowest
+    from app.published_reports where batch_id = ${batchId}::uuid and superseded_at is null`;
+  const subjects = await sql`
+    select s ->> 'subject' as subject, avg((s ->> 'total')::numeric) as average, max((s ->> 'total')::numeric) as highest, min((s ->> 'total')::numeric) as lowest
+    from app.published_reports r cross join jsonb_array_elements(r.snapshot -> 'subjects') s
+    where r.batch_id = ${batchId}::uuid and r.superseded_at is null and s ->> 'total' is not null group by 1`;
+  return {
+    students: Number(overall.students), average: figure(overall.average), highest: figure(overall.highest), lowest: figure(overall.lowest),
+    subjects: Object.fromEntries(subjects.map(row => [String(row.subject), { average: figure(row.average)!, highest: figure(row.highest)!, lowest: figure(row.lowest)! }])),
+  };
+}
 
 /** Director statistics use published, current report revisions only. Pending work appears as counts. */
 export async function directorStatistics(termId: string, classId: string | null, subject: string | null) {

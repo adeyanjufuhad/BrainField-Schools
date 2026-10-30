@@ -42,6 +42,15 @@ npm run db:reset-demo   # returns the demo class to blank draft sheets (refuses 
 Neon project: `brainfield-schools` (`patient-glade-48656206`, AWS London), branch `development`.
 
 
+## Report card format
+
+The student report card (`src/components/portal/report-card.tsx`) follows the layout of the school's existing printed cards: school header, session/term/class block, class statistics, a subject table, affective-trait and psychomotor rating tables, the grade key and the promotion/teacher/principal rows. It prints to one A4 page ("Print or save as PDF") and is styled in the confirmed palette rather than the colours of the paper cards.
+
+- **From published results:** CA, exam, total, grade and remark per subject; the student's total and average; class average, highest and lowest per subject; number of students and the class average, highest and lowest average. Class figures are aggregates from the same published batch, computed when the card is shown (no extra data is stored).
+- **Grade key** is read from the grading policy used for that publication, so the card can never show bands different from the grades it printed.
+- **Deliberately blank (shown as a dash or empty cell, as on the school's own cards):** subject and class positions (no rankings until a tie policy is agreed), days opened/present/absent, next term begins, affective and psychomotor ratings, promotion status and the class teacher and principal comments. These need their own entry and approval steps before they can be filled.
+- **Not included:** the student photograph (private images stay out of the repository and storage is not built yet), the paper card's "weighted score" column (its formula is not documented), and a school email address (not yet verified in `src/content/school.ts`).
+- The sample cards show a 20-mark bi-weekly test column and a 100-mark scale in different bands from our placeholder policy. The card shows whatever the school-approved grading policy defines; confirm the real assessment components and bands before launch.
 ## Administrator workspace
 
 An `administrator` grant opens **School setup** and **People**. Administrators manage the school's structure and access; they get no academic authority (no score entry, review, approval or publication), and the database refuses those calls for them.
