@@ -71,3 +71,5 @@ These defaults apply to the development portal slice until the school decides ot
 | Director access | Published statistics; pending stages as counts only | Director / principal |
 | Grading | Labelled example policy: CA 40 + exam 60, pass 40, A–F bands; no rankings | Academic leadership |
 | Account linking | Provisioning sets the Auth user ID; no email matching | School administration / ICT lead |
+| Students without email | Admission number is the login, mapped to a non-routable `.invalid` address; temporary password shown once to the administrator | School administration / ICT lead |
+| Administrator authority | Manages classes, people and access only; no academic actions | Principal / school administration |
