@@ -15,7 +15,7 @@ test.skip(!existsSync(accountsFile), "Requires the seeded development database (
 async function signIn(browser: Browser, key: string): Promise<Page> {
   const page = await (await browser.newContext()).newPage();
   await page.goto("/portal");
-  await page.getByLabel("School email address").fill(accounts[key].email);
+  await page.getByLabel("Email address or admission number").fill(accounts[key].email);
   await page.getByLabel("Password").fill(accounts[key].password);
   await page.getByRole("button", { name: "Sign in" }).click();
   const welcome = page.getByRole("heading", { level: 1, name: `Welcome, ${accounts[key].name}` });
@@ -62,11 +62,11 @@ test.beforeEach(({}, testInfo) => test.skip(testInfo.project.name !== "desktop",
 
 test("sign-in rejects wrong passwords and students start with no published results", async ({ browser, page }) => {
   await page.goto("/portal");
-  await page.getByLabel("School email address").fill(accounts.student001.email);
+  await page.getByLabel("Email address or admission number").fill(accounts.student001.email);
   await page.getByLabel("Password").fill("not-the-password");
   await page.getByRole("button", { name: "Sign in" }).click();
   await expect(page.locator("#sign-in-error")).toContainText("don’t match a school account");
-  await expect(page.getByLabel("School email address")).toHaveValue(accounts.student001.email);
+  await expect(page.getByLabel("Email address or admission number")).toHaveValue(accounts.student001.email);
 
   const student = await signIn(browser, "student001");
   await student.getByRole("link", { name: "My results", exact: true }).first().click();
