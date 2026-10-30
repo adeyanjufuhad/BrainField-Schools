@@ -72,6 +72,8 @@ export const canOverseeClasses = (actor: Actor) => hasRole(actor, "vp_admin", "p
 export const canViewClass = (actor: Actor, classId: string) =>
   canOverseeClasses(actor) || actor.classTeacherOf.some(item => item.classId === classId);
 export const canViewDirectorDashboard = (actor: Actor) => hasRole(actor, "director", "principal");
+/** Administrators manage accounts and structure only; they get no academic authority from this role. */
+export const isAdministrator = (actor: Actor) => hasRole(actor, "administrator");
 
 export type NavItem = { href: string; label: string };
 export function navigationFor(actor: Actor): NavItem[] {
@@ -80,5 +82,6 @@ export function navigationFor(actor: Actor): NavItem[] {
   if (actor.classTeacherOf.length || canOverseeClasses(actor)) items.push({ href: "/portal/classes", label: "Class results" });
   if (actor.kind === "student") items.push({ href: "/portal/results", label: "My results" });
   if (canViewDirectorDashboard(actor)) items.push({ href: "/portal/director", label: "Director dashboard" });
+  if (isAdministrator(actor)) items.push({ href: "/portal/admin", label: "School setup" }, { href: "/portal/admin/people", label: "People" });
   return items;
 }

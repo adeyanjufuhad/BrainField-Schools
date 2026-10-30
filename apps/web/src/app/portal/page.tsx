@@ -4,7 +4,7 @@ import { ArrowLeftIcon, ArrowRightIcon } from "@radix-ui/react-icons";
 import { Brand } from "@/components/brand";
 import { PortalShell } from "@/components/portal/portal-shell";
 import { SignInForm } from "@/components/portal/sign-in-form";
-import { canOverseeClasses, canViewDirectorDashboard, getSessionState, hasRole } from "@/lib/portal/actor";
+import { canOverseeClasses, canViewDirectorDashboard, getSessionState, hasRole, isAdministrator } from "@/lib/portal/actor";
 import { overviewCounts } from "@/lib/portal/queries";
 import { signOutAction } from "./actions";
 
@@ -30,6 +30,7 @@ export default async function Portal() {
   else if (canOverseeClasses(actor)) cards.push({ href: "/portal/classes", title: "Class results", detail: "Progress for every class" });
   if (actor.kind === "student") cards.push({ href: "/portal/results", title: "My results", count: counts.publishedResults, detail: "Published report cards" });
   if (canViewDirectorDashboard(actor)) cards.push({ href: "/portal/director", title: "Director dashboard", detail: "Published results and statistics" });
+  if (isAdministrator(actor)) cards.push({ href: "/portal/admin", title: "School setup", detail: "Classes, subjects and teacher assignments" }, { href: "/portal/admin/people", title: "People", detail: "Staff, students, sign-ins and roles" });
 
   return <PortalShell actor={actor} current="/portal" title={`Welcome, ${actor.name}`} description="Here’s what needs your attention this term.">
     {cards.length ? <ul className="portal-cards">{cards.map(card => <li key={card.title}><Link href={card.href}><span>{card.title}</span>{card.count !== undefined && <strong>{card.count}</strong>}<small>{card.detail}</small><ArrowRightIcon aria-hidden="true" /></Link></li>)}</ul>

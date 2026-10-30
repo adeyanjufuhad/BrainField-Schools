@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { getNeonAuth } from "@/lib/auth/server";
 import { getDatabase, runWorkflow, WorkflowError } from "@/lib/db/neon";
 import { getSessionState } from "@/lib/portal/actor";
+import { loginEmailFor } from "@/lib/portal/accounts";
 
 export type ActionResult = { ok: true; version: number; message: string } | { ok: false; error: string };
 export type SignInState = { error?: string; email?: string };
@@ -16,12 +17,12 @@ export async function signInAction(_previous: SignInState, formData: FormData): 
   if (!auth) return { error: "School sign-in is not available yet." };
   const email = String(formData.get("email") ?? "").trim().toLowerCase().slice(0, 254);
   const password = String(formData.get("password") ?? "").slice(0, 256);
-  if (!email || !password) return { error: "Enter your school email address and password.", email };
-  const { error } = await auth.signIn.email({ email, password });
+  if (!email || !password) return { error: "Enter your email address or admission number, and your password.", email };
+  const { error } = await auth.signIn.email({ email: loginEmailFor(email), password });
   if (error) {
     if (error.status === 429) return { error: "Too many sign-in attempts. Wait a minute, then try again.", email };
     if (error.status !== 401) console.error("Sign-in failed", error.status, error.code);
-    return { error: "That email address and password don’t match a school account. Check them and try again.", email };
+    return { error: "Those sign-in details don’t match a school account. Check them and try again.", email };
   }
   redirect("/portal");
 }
