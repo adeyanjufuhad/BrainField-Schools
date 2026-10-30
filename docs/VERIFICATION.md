@@ -66,3 +66,13 @@ Production build, TypeScript, ESLint and document checks passed. The full browse
 ## Faster unobstructed slideshow — 15 October 2026
 
 Removed the inset range slider and image counter. Images now change every three seconds, with matching zoom duration, hover/focus pause and reduced-motion support. Production build, TypeScript and ESLint passed. All 17 applicable landing checks passed, with one intentional desktop skip. Refreshed the existing browser preview, confirmed zero slider controls and no browser JavaScript errors, and checked mobile navigation. Desktop and 360px mobile reviews of home, Gallery and portal passed image decoding and horizontal overflow checks. Source photos and result data were unchanged.
+
+## Dependency audit after adding Neon Auth — 30 October 2026
+
+`npm audit` in `apps/web` reported 10 advisories, all arriving through `@neondatabase/auth@0.6.0-beta` (0.7.0-beta, the newest release, still pins the same versions).
+
+- **Fixed: `zod` (high, memory exhaustion on oversized collections).** The SDK pins `zod@4.5.4`, so `npm audit fix` could not move it. `package.json` now has an `overrides` entry for `zod` 4.6.7. Typecheck, lint, the production build and the full Playwright suite (real Neon sign-in, admin and results workflows) pass with it. Remove the override once the SDK ships a fixed `zod`.
+- **Open: `@better-auth/drizzle-adapter` (low, rate limits can be exceeded under concurrent requests on PostgreSQL).** No patched 1.7.x release exists (only 1.8 betas). It applies to a self-hosted better-auth server using its own Drizzle/PostgreSQL rate limiter; this app uses Neon's hosted Auth through the SDK's server client and does not run that code path.
+- **Open: `deepmerge` prototype poisoning, reached through `html-to-text` → `@react-email/*` → `@daveyplate/better-auth-ui` → `@neondatabase/auth-ui`.** The latest `deepmerge` (4.3.1) is affected and has no fix. The app imports none of the Auth UI or email-rendering packages, so the code is installed but not used.
+
+Revisit when the Neon Auth SDK leaves beta or publishes a release with updated `better-auth`.
