@@ -16,6 +16,7 @@ const staff = [
   { key: "vp", name: "Demo VP Administration", email: "demo.vp@example.com", roles: ["vp_admin"] },
   { key: "principal", name: "Demo Principal", email: "demo.principal@example.com", roles: ["principal", "publisher"] },
   { key: "director", name: "Demo Director", email: "demo.director@example.com", roles: ["director"] },
+  { key: "admin", name: "Demo Administrator", email: "demo.admin@example.com", roles: ["administrator"] },
 ];
 const students = Array.from({ length: 6 }, (_, index) => {
   const number = String(index + 1).padStart(3, "0");

@@ -34,6 +34,7 @@
     "test:e2e": "playwright test",
     "db:migrate": "node scripts/db-migrate.mjs",
     "db:seed": "node scripts/db-seed.mjs",
-    "db:reset-demo": "node scripts/db-reset-demo.mjs"
+    "db:reset-demo": "node scripts/db-reset-demo.mjs",
+    "db:seed-admin": "node scripts/db-seed-admin.mjs"
   }
 }
