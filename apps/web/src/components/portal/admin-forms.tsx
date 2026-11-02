@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { CopyIcon } from "@radix-ui/react-icons";
 import {
   addStaffAction, addStudentAction, createClassAction, createLoginAction, createSubjectAction, enrolAction,
-  setActiveAction, setClassTeacherAction, setRoleAction, setSubjectTeacherAction, type AdminResult, type Credentials,
+  resetPasswordAction, setActiveAction, setClassTeacherAction, setRoleAction, setSubjectTeacherAction, type AdminResult, type Credentials,
 } from "@/app/portal/admin/actions";
 
 const roleLabels = { administrator: "Administrator", principal: "Principal", vp_admin: "VP Administration", publisher: "Publisher", director: "Director" } as const;
@@ -20,12 +20,12 @@ function Notice({ result }: { result: AdminResult | null }) {
 export function CredentialsNotice({ credentials }: { credentials: Credentials }) {
   const [copied, setCopied] = useState(false);
   const copy = async () => {
-    try { await navigator.clipboard.writeText(`Login: ${credentials.login}\nTemporary password: ${credentials.password}`); setCopied(true); } catch { setCopied(false); }
+    try { await navigator.clipboard.writeText(`Login: ${credentials.login ?? "your usual email address"}\nTemporary password: ${credentials.password}`); setCopied(true); } catch { setCopied(false); }
   };
   return <div className="credentials" role="region" aria-label={`Sign-in details for ${credentials.name}`}>
     <strong>Sign-in details for {credentials.name}</strong>
-    <dl><div><dt>Login</dt><dd>{credentials.login}</dd></div><div><dt>Temporary password</dt><dd className="credential-password">{credentials.password}</dd></div></dl>
-    <p>Copy these now and hand them over in person. The password will not be shown again.</p>
+    <dl><div><dt>Login</dt><dd>{credentials.login ?? "Their usual email address (unchanged)"}</dd></div><div><dt>Temporary password</dt><dd className="credential-password">{credentials.password}</dd></div></dl>
+    <p>Copy these now and hand them over in person. The password will not be shown again. They will be asked to choose their own password when they sign in.</p>
     <button type="button" className="button button-outline button-small" onClick={copy}><CopyIcon aria-hidden="true" />{copied ? "Copied" : "Copy details"}</button>
   </div>;
 }
@@ -117,6 +117,7 @@ export function PersonControls({ person, classes }: { person: Person; classes: {
   const [loginEmail, setLoginEmail] = useState("");
   const [classId, setClassId] = useState(person.classId ?? "");
   const [confirmDeactivate, setConfirmDeactivate] = useState(false);
+  const [confirmReset, setConfirmReset] = useState(false);
   return <div className="person-controls">
     {person.kind === "staff" && <fieldset className="role-toggles"><legend className="sr-only">Roles for {person.name}</legend>
       {(Object.keys(roleLabels) as RoleKey[]).map(role => <label key={role}><input type="checkbox" checked={person.roles.includes(role)} disabled={pending || (person.isSelf && role === "administrator")}
@@ -132,6 +133,9 @@ export function PersonControls({ person, classes }: { person: Person; classes: {
       {person.kind === "staff" && <input type="email" aria-label={`Sign-in email for ${person.name}`} placeholder="Email address" value={loginEmail} onChange={event => setLoginEmail(event.target.value)} />}
       <button type="button" className="button button-outline button-small" disabled={pending || (person.kind === "staff" && !loginEmail)} onClick={() => run(() => createLoginAction(person.id, loginEmail))}>Create sign-in</button>
     </div>}
+    {person.hasLogin && person.active && !person.isSelf && (!confirmReset
+      ? <button type="button" className="text-button" disabled={pending} onClick={() => setConfirmReset(true)}>Reset password</button>
+      : <span className="confirm-inline"><button type="button" className="button button-green button-small" disabled={pending} onClick={() => run(() => resetPasswordAction(person.id), () => setConfirmReset(false))}>{pending ? "Resetting…" : `Yes, reset ${person.name}’s password`}</button><button type="button" className="text-button" onClick={() => setConfirmReset(false)}>Cancel</button></span>)}
     {!person.isSelf && (person.active
       ? !confirmDeactivate ? <button type="button" className="text-button" disabled={pending} onClick={() => setConfirmDeactivate(true)}>Remove access</button>
         : <span className="confirm-inline"><button type="button" className="button button-red button-small" disabled={pending} onClick={() => run(() => setActiveAction(person.id, false))}>Yes, remove access</button><button type="button" className="text-button" onClick={() => setConfirmDeactivate(false)}>Cancel</button></span>

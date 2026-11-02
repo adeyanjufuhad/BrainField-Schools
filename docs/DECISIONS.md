@@ -73,3 +73,4 @@ These defaults apply to the development portal slice until the school decides ot
 | Account linking | Provisioning sets the Auth user ID; no email matching | School administration / ICT lead |
 | Students without email | Admission number is the login, mapped to a non-routable `.invalid` address; temporary password shown once to the administrator | School administration / ICT lead |
 | Administrator authority | Manages classes, people and access only; no academic actions | Principal / school administration |
+| Forgotten passwords (2 November 2026) | No email reset link (students have no inbox). An administrator issues a new temporary password, shown once; the person is signed out everywhere and must choose their own before anything else opens. Minimum 10 characters | School administration / ICT lead |

@@ -31,7 +31,7 @@ export async function schoolPeople(actor: Actor) {
   const sql = getDatabase();
   const termId = actor.term?.id ?? null;
   const people = await sql`
-    select p.id, p.full_name, p.kind, p.admission_number, p.active, p.auth_user_id is not null as has_login,
+    select p.id, p.full_name, p.kind, p.admission_number, p.active, p.auth_user_id is not null as has_login, p.password_change_required,
       coalesce((select array_agg(g.role order by g.role) from app.role_grants g where g.profile_id = p.id and g.revoked_at is null), '{}') as roles,
       e.class_id, c.name as class_name,
       exists (select 1 from app.scores sc where sc.enrolment_id = e.id) as has_scores
@@ -46,7 +46,7 @@ export async function schoolPeople(actor: Actor) {
     order by e.created_at desc limit 15`;
   const mapped = people.map(row => ({
     id: String(row.id), name: String(row.full_name), kind: row.kind as "staff" | "student", admissionNumber: row.admission_number as string | null,
-    active: Boolean(row.active), hasLogin: Boolean(row.has_login), roles: row.roles as Role[],
+    active: Boolean(row.active), hasLogin: Boolean(row.has_login), temporaryPassword: Boolean(row.password_change_required), roles: row.roles as Role[],
     classId: row.class_id as string | null, className: row.class_name as string | null, hasScores: Boolean(row.has_scores),
     isSelf: row.id === actor.profileId,
   }));

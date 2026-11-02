@@ -3,10 +3,11 @@
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { getDatabase, runWorkflow, WorkflowError } from "@/lib/db/neon";
-import { getSessionState, isAdministrator, type Role } from "@/lib/portal/actor";
-import { AccountError, createAuthAccount, studentLoginEmail, temporaryPassword } from "@/lib/portal/accounts";
+import { actorForAction, isAdministrator, type Role } from "@/lib/portal/actor";
+import { AccountError, createAuthAccount, resetAuthPassword, studentLoginEmail, temporaryPassword } from "@/lib/portal/accounts";
 
-export type Credentials = { name: string; login: string; password: string };
+/** Staff resets omit the login: their email address is unchanged and lives only in Neon Auth. */
+export type Credentials = { name: string; login?: string; password: string };
 export type AdminResult = { ok: true; message: string; credentials?: Credentials } | { ok: false; error: string };
 
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -15,8 +16,8 @@ const roles: Role[] = ["administrator", "principal", "vp_admin", "publisher", "d
 const text = (formData: FormData, key: string, max = 120) => String(formData.get(key) ?? "").trim().slice(0, max);
 
 async function asAdministrator<T extends AdminResult>(work: (actorId: string) => Promise<T>): Promise<AdminResult> {
-  const state = await getSessionState();
-  if (state.status !== "ready") return { ok: false, error: "Your session has ended. Sign in again to continue." };
+  const state = await actorForAction();
+  if ("error" in state) return { ok: false, error: state.error };
   if (!isAdministrator(state.actor)) return { ok: false, error: "Only a school administrator can make this change." };
   try {
     const result = await work(state.actor.profileId);
@@ -131,6 +132,25 @@ export async function createLoginAction(profileId: string, staffEmail: string): 
     if (person.kind === "staff" && !email.test(login)) return { ok: false, error: "Enter a valid email address for their sign-in." };
     const credentials = await provisionLogin(actorId, profileId, login, String(person.full_name));
     return { ok: true, message: `Sign-in created for ${person.full_name}. Give them these details in person.`, credentials: person.kind === "student" ? { ...credentials, login: String(person.admission_number) } : credentials };
+  });
+}
+
+/** Replaces a forgotten password with a new temporary one, signs the person out everywhere and makes them choose their own. */
+export async function resetPasswordAction(profileId: string): Promise<AdminResult> {
+  if (!uuid.test(profileId)) return { ok: false, error: "This person could not be found." };
+  return asAdministrator(async actorId => {
+    const [target] = await call(() => getDatabase()`select * from app.admin_password_reset_target(${actorId}, ${profileId})`) as { auth_user_id: string; full_name: string; kind: string; admission_number: string | null }[];
+    const password = temporaryPassword();
+    await resetAuthPassword(target.auth_user_id, password, await siteOrigin());
+    const credentials = { name: target.full_name, login: target.kind === "student" ? String(target.admission_number) : undefined, password };
+    try {
+      await call(() => getDatabase()`select app.admin_record_password_reset(${actorId}, ${profileId})`);
+    } catch (error) {
+      // The new password is already live, so it must still be shown or the person is locked out.
+      console.error("Recording a password reset failed", error);
+      return { ok: true, message: `Password reset for ${target.full_name}, but the portal could not record it, so they will not be asked to change it. Ask them to change it from Account.`, credentials };
+    }
+    return { ok: true, message: `Password reset for ${target.full_name}. They have been signed out and must choose a new password when they next sign in.`, credentials };
   });
 }
 

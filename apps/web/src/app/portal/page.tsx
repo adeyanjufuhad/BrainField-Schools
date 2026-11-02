@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { ArrowLeftIcon, ArrowRightIcon } from "@radix-ui/react-icons";
 import { Brand } from "@/components/brand";
 import { PortalShell } from "@/components/portal/portal-shell";
@@ -21,6 +22,7 @@ export default async function Portal() {
   if (state.status !== "ready") return <Gate><span className="eyebrow">School portal</span><h1>Account not ready</h1><p>{state.status === "inactive" ? "This account has been deactivated by the school." : "You’re signed in, but this account hasn’t been linked to a school profile yet."} Contact the school office to get access. Signing up does not give access to school records.</p><form action={signOutAction}><button type="submit" className="button button-green">Sign out</button></form></Gate>;
 
   const { actor } = state;
+  if (actor.passwordChangeRequired) redirect("/portal/account");
   const counts = await overviewCounts(actor);
   const cards: { href: string; title: string; detail: string; count?: number }[] = [];
   if (actor.teachesSubjects) cards.push({ href: "/portal/teaching", title: "My score sheets", count: counts.toComplete, detail: counts.returned ? `${counts.returned} returned for correction` : "Sheets in draft or returned" });

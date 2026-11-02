@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getNeonAuth } from "@/lib/auth/server";
 import { getDatabase, runWorkflow, WorkflowError } from "@/lib/db/neon";
-import { getSessionState } from "@/lib/portal/actor";
+import { actorForAction, getSessionState } from "@/lib/portal/actor";
 import { loginEmailFor } from "@/lib/portal/accounts";
 
 export type ActionResult = { ok: true; version: number; message: string } | { ok: false; error: string };
@@ -32,9 +32,42 @@ export async function signOutAction() {
   redirect("/portal");
 }
 
-async function transition(label: string, paths: string[], call: (actorId: string) => Promise<number>): Promise<ActionResult> {
+export type PasswordState = { ok?: boolean; error?: string };
+
+/** Neon Auth checks the current password; the school record then stops asking for a change. */
+export async function changePasswordAction(_previous: PasswordState, formData: FormData): Promise<PasswordState> {
+  const auth = getNeonAuth();
   const state = await getSessionState();
-  if (state.status !== "ready") return { ok: false, error: "Your session has ended. Sign in again to continue." };
+  if (!auth || state.status !== "ready") return { error: "Your session has ended. Sign in again to continue." };
+  const currentPassword = String(formData.get("currentPassword") ?? "").slice(0, 256);
+  const newPassword = String(formData.get("newPassword") ?? "");
+  const confirm = String(formData.get("confirmPassword") ?? "");
+  if (!currentPassword) return { error: "Enter your current password." };
+  if (newPassword.length < 10 || newPassword.length > 128) return { error: "Choose a new password of 10 to 128 characters." };
+  if (newPassword !== confirm) return { error: "The new passwords don’t match. Type the same password in both boxes." };
+  if (newPassword === currentPassword) return { error: "Choose a password different from your current one." };
+  const { error } = await auth.changePassword({ currentPassword, newPassword, revokeOtherSessions: true });
+  if (error) {
+    if (error.status === 429) return { error: "Too many attempts. Wait a minute, then try again." };
+    // The SDK reports Better Auth's INVALID_PASSWORD as invalid_credentials with status 401.
+    if (error.code === "invalid_credentials" || error.code === "INVALID_PASSWORD") return { error: "Your current password is not correct." };
+    if (error.status === 401) return { error: "Your session has ended. Sign in again to continue." };
+    console.error("Password change failed", error.status, error.code);
+    return { error: "Your password could not be changed. Please try again." };
+  }
+  try {
+    await runWorkflow(() => getDatabase()`select app.complete_password_change(${state.actor.profileId})`);
+  } catch (failure) {
+    console.error("Recording the password change failed", failure);
+    return { error: "Your password was changed, but the portal could not record it. Sign in again with your new password." };
+  }
+  revalidatePath("/portal", "layout");
+  return { ok: true };
+}
+
+async function transition(label: string, paths: string[], call: (actorId: string) => Promise<number>): Promise<ActionResult> {
+  const state = await actorForAction();
+  if ("error" in state) return { ok: false, error: state.error };
   try {
     const version = await runWorkflow(() => call(state.actor.profileId));
     for (const path of ["/portal", ...paths]) revalidatePath(path);

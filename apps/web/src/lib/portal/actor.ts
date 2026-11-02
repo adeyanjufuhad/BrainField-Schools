@@ -14,6 +14,8 @@ export type Actor = {
   term: { id: string; name: string; sessionName: string } | null;
   teachesSubjects: boolean;
   classTeacherOf: { classId: string; className: string }[];
+  /** Set after a new sign-in or a reset: someone else has seen this password, so nothing else opens until it is replaced. */
+  passwordChangeRequired: boolean;
 };
 
 export type SessionState =
@@ -32,7 +34,7 @@ export const getSessionState = cache(async (): Promise<SessionState> => {
   if (!user?.id) return { status: "signed-out" };
 
   const sql = getDatabase();
-  const [profile] = await sql`select id, full_name, kind, active from app.profiles where auth_user_id = ${user.id}`;
+  const [profile] = await sql`select id, full_name, kind, active, password_change_required from app.profiles where auth_user_id = ${user.id}`;
   if (!profile) return { status: "unlinked", email: user.email };
   if (!profile.active) return { status: "inactive", email: user.email };
 
@@ -55,14 +57,25 @@ export const getSessionState = cache(async (): Promise<SessionState> => {
       term: term ? { id: term.id, name: term.name, sessionName: term.session_name } : null,
       teachesSubjects: teaching.length > 0,
       classTeacherOf: classes.map(row => ({ classId: row.id, className: row.name })),
+      passwordChangeRequired: profile.password_change_required,
     },
   };
 });
 
+/** For every portal page except the account page: a temporary password must be replaced first. */
 export async function requireActor(): Promise<Actor> {
   const state = await getSessionState();
   if (state.status !== "ready") redirect("/portal");
+  if (state.actor.passwordChangeRequired) redirect("/portal/account");
   return state.actor;
+}
+
+/** Server actions refuse to act until a temporary password is replaced. */
+export async function actorForAction(): Promise<{ actor: Actor } | { error: string }> {
+  const state = await getSessionState();
+  if (state.status !== "ready") return { error: "Your session has ended. Sign in again to continue." };
+  if (state.actor.passwordChangeRequired) return { error: "Choose a new password before making changes." };
+  return { actor: state.actor };
 }
 
 export const hasRole = (actor: Actor, ...roles: Role[]) => roles.some(role => actor.roles.includes(role));
@@ -77,11 +90,13 @@ export const isAdministrator = (actor: Actor) => hasRole(actor, "administrator")
 
 export type NavItem = { href: string; label: string };
 export function navigationFor(actor: Actor): NavItem[] {
+  if (actor.passwordChangeRequired) return [{ href: "/portal/account", label: "Account" }];
   const items: NavItem[] = [{ href: "/portal", label: "Overview" }];
   if (actor.teachesSubjects) items.push({ href: "/portal/teaching", label: "My score sheets" });
   if (actor.classTeacherOf.length || canOverseeClasses(actor)) items.push({ href: "/portal/classes", label: "Class results" });
   if (actor.kind === "student") items.push({ href: "/portal/results", label: "My results" });
   if (canViewDirectorDashboard(actor)) items.push({ href: "/portal/director", label: "Director dashboard" });
   if (isAdministrator(actor)) items.push({ href: "/portal/admin", label: "School setup" }, { href: "/portal/admin/people", label: "People" });
+  items.push({ href: "/portal/account", label: "Account" });
   return items;
 }

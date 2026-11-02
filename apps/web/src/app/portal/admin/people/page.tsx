@@ -10,13 +10,16 @@ export const metadata: Metadata = { title: "People" };
 const eventLabels: Record<string, string> = {
   class_created: "Class added", subject_created: "Subject added", profile_created: "Person added", account_linked: "Sign-in created",
   profile_deactivated: "Access removed", profile_reactivated: "Access restored", role_granted: "Role granted", role_revoked: "Role removed",
+  password_reset: "Password reset", password_changed: "Password changed",
   subject_teacher_set: "Subject teacher assigned", class_teacher_set: "Class teacher assigned", student_enrolled: "Student enrolled",
 };
 const roleNames: Record<string, string> = { administrator: "Administrator", principal: "Principal", vp_admin: "VP Administration", publisher: "Publisher", director: "Director" };
 const when = (date: Date) => date.toLocaleString("en-NG", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", timeZone: "Africa/Lagos" });
 
-function Access({ active, hasLogin }: { active: boolean; hasLogin: boolean }) {
-  return <span className={`status-badge ${!active ? "status-attention" : hasLogin ? "status-done" : "status-neutral"}`}>{!active ? "Access removed" : hasLogin ? "Can sign in" : "No sign-in yet"}</span>;
+function Access({ active, hasLogin, temporaryPassword }: { active: boolean; hasLogin: boolean; temporaryPassword: boolean }) {
+  if (!active) return <span className="status-badge status-attention">Access removed</span>;
+  if (!hasLogin) return <span className="status-badge status-neutral">No sign-in yet</span>;
+  return <span className={`status-badge ${temporaryPassword ? "status-neutral" : "status-done"}`}>{temporaryPassword ? "Temporary password" : "Can sign in"}</span>;
 }
 
 export default async function People() {
@@ -33,7 +36,7 @@ export default async function People() {
         <thead><tr><th scope="col">Name</th><th scope="col">Access</th><th scope="col">Roles and actions</th></tr></thead>
         <tbody>{people.staff.map(person => <tr key={person.id} className={person.active ? undefined : "row-inactive"}>
           <th scope="row"><span className="student-name">{person.name}{person.isSelf ? " (you)" : ""}</span><span className="student-id">{person.roles.map(role => roleNames[role]).join(" · ") || "Teaching staff"}</span></th>
-          <td><Access active={person.active} hasLogin={person.hasLogin} /></td>
+          <td><Access active={person.active} hasLogin={person.hasLogin} temporaryPassword={person.temporaryPassword} /></td>
           <td><PersonControls person={person} classes={people.classes} /></td>
         </tr>)}</tbody>
       </table></div>
@@ -45,7 +48,7 @@ export default async function People() {
         <thead><tr><th scope="col">Name</th><th scope="col">Access</th><th scope="col">Class and actions</th></tr></thead>
         <tbody>{people.students.map(person => <tr key={person.id} className={person.active ? undefined : "row-inactive"}>
           <th scope="row"><span className="student-name">{person.name}</span><span className="student-id">{person.admissionNumber} · {person.className ?? "Not enrolled this term"}{person.hasScores ? " · has scores" : ""}</span></th>
-          <td><Access active={person.active} hasLogin={person.hasLogin} /></td>
+          <td><Access active={person.active} hasLogin={person.hasLogin} temporaryPassword={person.temporaryPassword} /></td>
           <td><PersonControls person={person} classes={people.classes} /></td>
         </tr>)}</tbody>
       </table></div>

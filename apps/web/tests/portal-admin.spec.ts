@@ -103,16 +103,79 @@ test("an administrator adds a class, subject, teacher and student with sign-ins"
   expect(result.violations).toEqual([]);
 });
 
-test("the new teacher and student can sign in, and removing access takes effect at once", async ({ browser }) => {
+/** A temporary password opens only the change-password page until it is replaced. */
+async function choosePassword(page: Page, current: string, name: string) {
+  const next = `${current}-mine-${stamp}`;
+  await page.getByLabel(/Temporary password from the school|Current password/).fill(current);
+  await page.getByLabel("New password", { exact: true }).fill(next);
+  await page.getByLabel("Type the new password again").fill(next);
+  await page.getByRole("button", { name: "Change password" }).click();
+  await expect(page.getByRole("status").filter({ hasText: "Your password has been changed." })).toBeVisible({ timeout: 30_000 });
+  await page.getByRole("link", { name: "Continue to the portal" }).click();
+  await expect(page.getByRole("heading", { level: 1, name: new RegExp(`Welcome, ${name}`) })).toBeVisible({ timeout: 30_000 });
+  return next;
+}
+
+test("new sign-ins must replace their temporary password before anything else opens", async ({ browser }) => {
   test.skip(!created.teacher || !created.student, "Depends on the previous test.");
+  const teacher = await signIn(browser, created.teacher!.login, created.teacher!.password, /Choose your own password/);
+  await expect(teacher).toHaveURL(/\/portal\/account$/);
+  const nav = teacher.getByRole("navigation", { name: "Portal" });
+  await expect(nav.getByRole("link")).toHaveText(["Account"]);
+  await teacher.goto("/portal/teaching");
+  await expect(teacher).toHaveURL(/\/portal\/account$/);
+
+  await teacher.getByLabel("Temporary password from the school").fill("not-the-right-password");
+  await teacher.getByLabel("New password", { exact: true }).fill("a-long-enough-password");
+  await teacher.getByLabel("Type the new password again").fill("a-long-enough-password");
+  await teacher.getByRole("button", { name: "Change password" }).click();
+  await expect(teacher.getByRole("alert").filter({ hasText: "Your current password is not correct." })).toBeVisible({ timeout: 30_000 });
+  await teacher.getByLabel("Temporary password from the school").fill(created.teacher!.password);
+  await teacher.getByLabel("New password", { exact: true }).fill("a-long-enough-password");
+  await teacher.getByLabel("Type the new password again").fill("a-different-password");
+  await teacher.getByRole("button", { name: "Change password" }).click();
+  await expect(teacher.getByRole("alert").filter({ hasText: "don’t match" })).toBeVisible();
+
+  const result = await new AxeBuilder({ page: teacher }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
+  expect(result.violations).toEqual([]);
+  created.teacher!.password = await choosePassword(teacher, created.teacher!.password, teacherName);
+
+  const student = await signIn(browser, created.student!.login, created.student!.password, /Choose your own password/);
+  created.student!.password = await choosePassword(student, created.student!.password, studentName);
+});
+
+test("an administrator resets a forgotten password, which signs the person out and needs replacing", async ({ browser }) => {
+  test.skip(!created.student?.password.includes("-mine-"), "Depends on the previous test.");
+  const student = await signIn(browser, created.student!.login, created.student!.password, new RegExp(`Welcome, ${studentName}`));
+
+  const admin = await signInAs(browser, "admin");
+  await admin.goto("/portal/admin/people");
+  await expect(admin.getByRole("row", { name: /\(you\)/ }).getByRole("button", { name: "Reset password" })).toHaveCount(0);
+  const row = admin.getByRole("row", { name: new RegExp(studentName) });
+  await row.getByRole("button", { name: "Reset password" }).click();
+  await row.getByRole("button", { name: `Yes, reset ${studentName}’s password` }).click();
+  const reset = await readCredentials(admin, studentName);
+  expect(reset.login).toBe(admission);
+  expect(reset.password).toMatch(/^[a-z2-9]{4}(-[a-z2-9]{4}){3}$/);
+  await admin.reload();
+  await expect(admin.getByRole("row", { name: new RegExp(studentName) }).getByText("Temporary password")).toBeVisible();
+
+  // The student's existing session no longer reaches their results.
+  await student.goto("/portal/results");
+  await expect(student).not.toHaveURL(/\/portal\/results$/);
+
+  const again = await signIn(browser, created.student!.login, reset.password, /Choose your own password/);
+  created.student!.password = await choosePassword(again, reset.password, studentName);
+  await expect(admin.getByRole("heading", { name: "Recent changes" })).toBeVisible();
+});
+
+test("the new teacher can work once signed in, and removing access takes effect at once", async ({ browser }) => {
+  test.skip(!created.teacher?.password.includes("-mine-"), "Depends on the password test.");
   const teacher = await signIn(browser, created.teacher!.login, created.teacher!.password, new RegExp(`Welcome, ${teacherName}`));
   await teacher.getByRole("navigation", { name: "Portal" }).getByRole("link", { name: "My score sheets" }).click();
   await teacher.getByRole("link", { name: new RegExp(`Enter scores for ${subjectName}, ${className}`) }).click();
   await expect(teacher).toHaveURL(url => url.pathname.startsWith("/portal/teaching/"), { timeout: 30_000 });
   await expect(teacher.getByLabel(`CA score for ${studentName}`)).toBeVisible({ timeout: 30_000 });
-
-  const student = await signIn(browser, created.student!.login, created.student!.password, new RegExp(`Welcome, ${studentName}`));
-  await expect(student.getByRole("navigation", { name: "Portal" }).getByRole("link", { name: "My results" })).toBeVisible();
 
   const admin = await signInAs(browser, "admin");
   await admin.goto("/portal/admin/people");

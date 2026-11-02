@@ -33,11 +33,12 @@ cd apps/web
 npm run db:migrate      # applies db/migrations and creates the restricted brainfield_app role
 npm run db:seed         # synthetic school, class, subjects, staff and students; writes .dev-accounts.local.json
 npm run db:seed-admin   # adds the demo administrator to an already-seeded database
+npm run auth:service-account  # once per Neon Auth project: the server-only account used for password resets
 npm run dev             # http://localhost:3001/portal
 npm run db:reset-demo   # returns the demo class to blank draft sheets (refuses on non-demo data)
 ```
 
-`apps/web/.env.local` holds `DATABASE_OWNER_URL` (migrations and seeding only), `DATABASE_URL` (the restricted app role), `NEON_AUTH_BASE_URL` and `NEON_AUTH_COOKIE_SECRET`. Both `.env.local` and `.dev-accounts.local.json` are gitignored. Use `localhost`, not `127.0.0.1`: Neon Auth only trusts localhost origins on this branch.
+`apps/web/.env.local` holds `DATABASE_OWNER_URL` (migrations and seeding only), `DATABASE_URL` (the restricted app role), `NEON_AUTH_BASE_URL`, `NEON_AUTH_COOKIE_SECRET`, and `NEON_AUTH_SERVICE_EMAIL` / `NEON_AUTH_SERVICE_PASSWORD` (written by `npm run auth:service-account`). Both `.env.local` and `.dev-accounts.local.json` are gitignored. Use `localhost`, not `127.0.0.1`: Neon Auth only trusts localhost origins on this branch.
 
 Neon project: `brainfield-schools` (`patient-glade-48656206`, AWS London), branch `development`.
 
@@ -71,8 +72,19 @@ Rules enforced in `db/migrations/0005_administration.sql`:
 
 - Staff sign in with their email address.
 - Students need no email. They sign in with their **admission number**, which is mapped to a non-routable address (`{admission}@students.brainfield.invalid`) behind the scenes.
-- When an administrator creates a sign-in, the app creates the Neon Auth account server-side and shows a generated temporary password (`xxxx-xxxx-xxxx-xxxx`, no look-alike characters) **once**, with a copy button. It is never stored or logged. Hand it over in person, and expect people to change it once password change is built.
+- When an administrator creates a sign-in, the app creates the Neon Auth account server-side and shows a generated temporary password (`xxxx-xxxx-xxxx-xxxx`, no look-alike characters) **once**, with a copy button. It is never stored or logged. Hand it over in person.
 - The Neon Auth account is linked to the profile by ID at creation time, never by email.
+
+### Passwords
+
+Implemented 2 November 2026 (`db/migrations/0006_passwords.sql`).
+
+- **Temporary passwords must be replaced.** A new sign-in or a reset sets `password_change_required`. Until the person chooses their own password, every portal page redirects to **Account**, the navigation shows only Account, and every server action refuses ("Choose a new password before making changes"). People shows these accounts as "Temporary password".
+- **Change password (Account, for everyone).** Requires the current password, which Neon Auth checks. The new one needs 10 to 128 characters, typed twice, and must differ from the current one. Other devices are signed out; this one stays signed in. `app.complete_password_change` then clears the flag and records "Password changed".
+- **Reset (People, administrators only).** For a forgotten password. No email link is sent, because students have no inbox. The administrator confirms, and the app sets a new temporary password, signs the person out of every device, flags the account and shows the password once. A staff member keeps their email login. The database checks the request first (`app.admin_password_reset_target`) and refuses administrators resetting their own password, people without a sign-in, and deactivated people. `app.admin_record_password_reset` writes "Password reset" to the audit log.
+- **How the reset reaches Neon Auth.** Setting someone else's password needs a Neon Auth admin. The server signs in, for that one request, as a dedicated service account (`NEON_AUTH_SERVICE_EMAIL` / `NEON_AUTH_SERVICE_PASSWORD`, server-only), then signs out again. That account has the Auth `admin` role, a non-routable `.invalid` email, and no school profile, so it cannot open the portal. School administrators never receive Auth admin rights.
+
+`tests/portal-admin.spec.ts` covers the forced change, wrong and mismatched passwords, the reset (including the old session losing access) and an accessibility scan. `tests/portal-database.spec.ts` covers the database refusals.
 
 `npm run db:seed-admin` adds the demo administrator to an existing demo database (and `.dev-accounts.local.json`); `npm run db:seed` includes it for a fresh one. Both refuse to run against a non-demo database. `tests/portal-admin.spec.ts` covers access control, creating a class, subject, teacher and student, signing in as the new people, and removing access.
 
@@ -84,7 +96,7 @@ Rules enforced in `db/migrations/0005_administration.sql`:
 
 ## Not built yet
 
-- Terms and sessions management, bulk student import, and password change or reset (administrators currently hand over a temporary password; people cannot change it yet).
+- Terms and sessions management and bulk student import.
 - Corrections after publication (a new revision through the same approvals). The schema supports revisions and superseding; the amendment flow is not built.
 - CSV score import, row-level security policies as a second layer, MFA for privileged staff, and Vercel environment configuration (production uses no database yet).
 
@@ -94,3 +106,4 @@ Rules enforced in `db/migrations/0005_administration.sql`:
 - Use a separate production project and branch.
 - Agree retention and backup.
 - Add the deployed site's origin to Neon Auth's trusted domains.
+- Run `npm run auth:service-account` against the production Auth project, and copy `NEON_AUTH_SERVICE_EMAIL` and `NEON_AUTH_SERVICE_PASSWORD` into the host's server-only environment variables. Without them, password reset shows "not set up" and changes nothing.

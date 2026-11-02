@@ -35,7 +35,8 @@
     "db:migrate": "node scripts/db-migrate.mjs",
     "db:seed": "node scripts/db-seed.mjs",
     "db:reset-demo": "node scripts/db-reset-demo.mjs",
-    "db:seed-admin": "node scripts/db-seed-admin.mjs"
+    "db:seed-admin": "node scripts/db-seed-admin.mjs",
+    "auth:service-account": "node scripts/auth-service-account.mjs"
   },
   "overrides": {
     "zod": "4.6.7"

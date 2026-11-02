@@ -72,3 +72,22 @@ test("administration functions refuse non-administrators, and administrators get
   if (batch.length) expect((await failure(sql`select app.publish_batch(${ids.admin}, ${batch[0].id}, ${batch[0].version})`)).code).toBe("BF403");
   expect((await failure(sql`insert into app.admin_events (school_id, actor_id, action) select school_id, id, 'forged' from app.profiles limit 1`)).code).toBe("42501");
 });
+
+test("password resets need an administrator, never their own account, and the flag cannot be cleared directly", async () => {
+  const sql = neon(process.env.DATABASE_URL!);
+  const [ids] = await sql`
+    select
+      (select g.profile_id from app.role_grants g where g.role = 'administrator' and g.revoked_at is null limit 1) as admin,
+      (select o.teacher_id from app.subject_offerings o join app.subjects sb on sb.id = o.subject_id where sb.name = 'Mathematics') as teacher,
+      (select id from app.profiles where kind = 'student' and auth_user_id is null limit 1) as student_without_login`;
+  test.skip(!ids.admin, "Requires the demo administrator (npm run db:seed-admin).");
+
+  expect((await failure(sql`select * from app.admin_password_reset_target(${ids.teacher}, ${ids.admin})`)).code).toBe("BF403");
+  expect((await failure(sql`select app.admin_record_password_reset(${ids.teacher}, ${ids.admin})`)).code).toBe("BF403");
+  expect((await failure(sql`select * from app.admin_password_reset_target(${ids.admin}, ${ids.admin})`)).code).toBe("BF409");
+  if (ids.student_without_login) expect((await failure(sql`select * from app.admin_password_reset_target(${ids.admin}, ${ids.student_without_login})`)).code).toBe("BF409");
+  const [target] = await sql`select * from app.admin_password_reset_target(${ids.admin}, ${ids.teacher})`;
+  expect(target.auth_user_id).toBeTruthy();
+  expect((await failure(sql`select app.complete_password_change(${randomUUID()})`)).code).toBe("BF401");
+  expect((await failure(sql`update app.profiles set password_change_required = false`)).code).toBe("42501");
+});
